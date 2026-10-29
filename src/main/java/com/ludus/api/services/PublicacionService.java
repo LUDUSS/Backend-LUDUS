@@ -3,8 +3,7 @@ package com.ludus.api.services;
 import com.ludus.api.models.Publicacion;
 import com.ludus.api.repositories.PublicacionRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,19 +36,24 @@ public class PublicacionService {
 
     // Crear una nueva resenia
     public Publicacion addPublicacion(Publicacion publicacion){
+        // si el frontend no envia la fecha, se crear aqui para evitar errores en la base de datos
+        if(publicacion.getFecha_publicacion()== null){
+            publicacion.setFecha_publicacion(LocalDateTime.now());
+        }// fin if
         // validacion
-        if(!publicacion.getTexto_resenia().isBlank() && !publicacion.getCalificacion().isNaN()){;
-        repository.save(publicacion);
+        if(publicacion.getTexto_resenia() != null && !publicacion.getTexto_resenia().isBlank() && publicacion.getCalificacion() != null){
+        return repository.save(publicacion);
         }// fin if
         return publicacion;
     }// fin addPublicacion
 
-    public Publicacion updatePublicacion(Integer idResenia, Double calificacion, String textoResenia) {
+    public Publicacion updatePublicacion(Integer id_resenia, Double calificacion, String textoResenia) {
         Publicacion publicacion = null;
         // encontrar la publiccaion con el id
-        if(repository.existsById(idResenia)){
-            Publicacion p = repository.findById(idResenia).get();
-            if(calificacion != null && !calificacion.isNaN()) p.setCalificacion((calificacion));
+        if(repository.existsById(id_resenia)){
+            Publicacion p = repository.findById(id_resenia).get();
+            if(calificacion != null) p.setCalificacion(calificacion);
+            if(textoResenia != null && !textoResenia.isBlank()) p.setTexto_resenia(textoResenia);
             publicacion = p;
             repository.save(publicacion);
         }
