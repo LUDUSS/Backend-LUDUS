@@ -43,10 +43,11 @@ public class PublicacionController {
     }// fin addPublicacion
 
     // editar una publicacion
-    @PutMapping
+    @PutMapping("/{id_resenia}")
     public Publicacion updatePublicacion(@PathVariable Integer id_resenia,
-                                         @RequestBody(required = false)Double calificacion,
-                                         @RequestBody(required = false)String texto_resenia){
-        return service.updatePublicacion(id_resenia,calificacion,texto_resenia);
+                                         @RequestParam(required = false) Double calificacion,
+                                         @RequestParam(required = false) String texto_resenia){
+        // Le pasamos el ID de la URL y los datos del JSON a tu servicio
+        return service.updatePublicacion(id_resenia,  calificacion, texto_resenia);
     }// fin updatePublicacion
 }// fin class PublicacionController
