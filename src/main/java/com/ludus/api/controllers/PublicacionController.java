@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PublicacionController {
     private final PublicacionService service;
-    @Autowired// -> Gestiona la inyeccion de dependencias de forma automatica
+    @Autowired// -> Gestiona la inyección de dependencias de forma automatica
     // -> INICIO CONSTRUCTOR PARA  PublicacionController
     public PublicacionController(PublicacionService service){
     this.service = service;
