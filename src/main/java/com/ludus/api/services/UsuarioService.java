@@ -38,7 +38,7 @@ public class UsuarioService {
     // Crear un nuevo usuario
     public Usuario addUsuario(Usuario usuario){
         // validacion
-        if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+                if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
             repository.save(usuario);
         }// fin if
         return usuario;
