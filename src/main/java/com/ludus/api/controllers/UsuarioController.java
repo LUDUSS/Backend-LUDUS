@@ -1,5 +1,6 @@
 package com.ludus.api.controllers;
 
+import com.ludus.api.dtos.RegistroUsuarioDto;
 import com.ludus.api.models.Usuario;
 import com.ludus.api.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,22 +37,20 @@ public class UsuarioController {
         return service.deleteUsuario(id_usuario);
     }// fin deleteUsuario
 
-    // agregar un usuario
     @PostMapping
-    public  Usuario addUsuario(@RequestBody Usuario usuario){ // -> Solicita los datos del usuario en el cuerpo de la solicitud en formato JSON
-        return  service.addUsuario(usuario);
-    }// fin addUsuario
+    public Usuario addUsuario(@RequestBody RegistroUsuarioDto dto) {
+        return service.addUsuario(dto);
+    }
 
-    // editar un usuario
     @PutMapping("/{id_usuario}")
-    public Usuario updateUsuario(@PathVariable Integer id_usuario,
-                                 @RequestBody Usuario usuario) {
+    public Usuario updateUsuario(
+            @PathVariable Integer id_usuario,
+            @RequestBody Usuario usuario) {
 
         return service.updateUsuario(
                 id_usuario,
                 usuario.getNombre(),
                 usuario.getCorreo(),
-                usuario.getContrasenia(),
                 usuario.getTelefono(),
                 usuario.getSobre_mi()
         );

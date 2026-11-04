@@ -14,10 +14,10 @@ public class Usuario {
     private Integer id_usuario;
     @Column (name = "nombre", nullable = false)
     private String nombre;
-    @Column (name = "correo", nullable = false)
+    @Column(name = "correo", nullable = false, unique = true)
     private String correo;
     @JsonIgnore
-    @Column (name = "contrasenia", nullable = false)
+    @Column(name = "contrasenia", nullable = false, length = 255)
     private String contrasenia;
     @Column (name = "telefono", nullable = false)
     private String telefono;
