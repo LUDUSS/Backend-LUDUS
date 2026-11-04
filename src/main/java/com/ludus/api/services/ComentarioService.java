@@ -20,7 +20,7 @@ public class ComentarioService {
     }
 
     public Comentario addComentario(Comentario comentario) {
-        if (comentario.getId_resenia() == null || comentario.getId_usuario() == null) {
+        if (comentario.getPublicacion() == null || comentario.getUsuario() == null) {
             throw new IllegalArgumentException("La reseña y el usuario son obligatorios.");
         }
         if (comentario.getTexto_comentario() == null || comentario.getTexto_comentario().isBlank()) {
@@ -30,5 +30,9 @@ public class ComentarioService {
         comentario.setTexto_comentario(comentario.getTexto_comentario().trim());
         comentario.setFecha_comentario(LocalDateTime.now());
         return repository.save(comentario);
+    }
+
+    public List<Comentario> getAllComentarios() {
+        return repository.findAll();
     }
 }

@@ -4,6 +4,7 @@ import com.ludus.api.models.Interaccion;
 import com.ludus.api.repositories.InteraccionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -13,33 +14,38 @@ public class InteraccionesService {
 
     public InteraccionesService(InteraccionRepository repository) {
         this.repository = repository;
-    }// constructor
+    }
 
     public List<Interaccion> getInteracciones() {
         return repository.findAll();
-    } // getInteracciones
+    }
 
     public Interaccion getInteraccion(Integer id_interaccion) {
-        return repository
-                .findById(id_interaccion)
-                .orElseThrow( () -> new IllegalArgumentException("La publicación con el id [" + id_interaccion + "] no existe."));
-    } // getInteraccion
+        return repository.findById(id_interaccion)
+                .orElseThrow(() -> new IllegalArgumentException("La interacción con el ID [" + id_interaccion + "] no existe."));
+    }
 
     public Interaccion addInteraccion(Interaccion interaccion) {
-        if (interaccion.getFecha_like() != null) { // No olvidar guardar los parametros faltantes cuando se agregen las FK
-            return repository.save(interaccion);
+        // Validamos que las relaciones no vengan nulas
+        if (interaccion.getUsuario() == null || interaccion.getUsuario().getId_usuario() == null) {
+            throw new IllegalArgumentException("El usuario es obligatorio para la interacción.");
         }
-        throw new IllegalArgumentException("La fecha de la interacción no puede ser nula");
-    }// addInteraccion
+        if (interaccion.getPublicacion() == null || interaccion.getPublicacion().getId_resenia() == null) {
+            throw new IllegalArgumentException("La publicación es obligatoria para la interacción.");
+        }
 
-    public Interaccion deleteInteraccion(Integer id_interaccion) {
-        Interaccion interaccion = null;
+        // Si no envían fecha, se asigna la actual
+        if (interaccion.getFecha_like() == null) {
+            interaccion.setFecha_like(LocalDateTime.now());
+        }
 
-        if(repository.existsById(id_interaccion)){
-            interaccion = repository.findById(id_interaccion).get();
-            repository.delete(interaccion);
-        }// if
+        return repository.save(interaccion);
+    }
 
-        return interaccion;
-    } // deleteInteraccion
-} // class InteraccionesService
+    public void deleteInteraccion(Integer id_interaccion) {
+        if (!repository.existsById(id_interaccion)) {
+            throw new IllegalArgumentException("La interacción con el ID [" + id_interaccion + "] no existe.");
+        }
+        repository.deleteById(id_interaccion);
+    }
+}
