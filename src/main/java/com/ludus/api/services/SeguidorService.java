@@ -21,11 +21,11 @@ public class SeguidorService {
     }// getSeguidores
 
     public List<Seguidor> getSiguiendo(Integer idUsuario) {
-        return repository.findById_seguidor(idUsuario);
+        return repository.findByIdSeguidor(idUsuario);
     }// getFollowing
 
     public List<Seguidor> getSeguidoresDe(Integer idUsuario) {
-        return repository.findById_seguido(idUsuario);
+        return repository.findByIdSeguido(idUsuario);
     }// getFollowers
 
     public Seguidor addSeguidor(Integer idSeguidor, Integer idSeguido) {
@@ -34,7 +34,7 @@ public class SeguidorService {
             throw new IllegalArgumentException("Un usuario no puede seguirse a sí mismo");
         }
         // Evitar duplicados
-        if (repository.existsById_seguidorAndId_seguido(idSeguidor, idSeguido)) {
+        if (repository.existsByIdSeguidorAndIdSeguido(idSeguidor, idSeguido)) {
             throw new IllegalArgumentException("El usuario " + idSeguidor + " ya sigue al usuario " + idSeguido);
         }
 
@@ -43,10 +43,10 @@ public class SeguidorService {
         return repository.save(nuevo);
     }// addSeguidor
 
-    public Seguidor deleteSeguidor(Integer id_seguimiento) {
+    public Seguidor deleteSeguidor(Integer idSeguimiento) {
         Seguidor seguidor = null;
-        if (repository.existsById(id_seguimiento)) {
-            seguidor = repository.findById(id_seguimiento).get();
+        if (repository.existsById(idSeguimiento)) {
+            seguidor = repository.findById(idSeguimiento).get();
             repository.delete(seguidor);
         }// if
         return seguidor;
