@@ -1,5 +1,6 @@
 package com.ludus.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class Usuario {
     private String nombre;
     @Column (name = "correo", nullable = false)
     private String correo;
+    @JsonIgnore
     @Column (name = "contrasenia", nullable = false)
     private String contrasenia;
     @Column (name = "telefono", nullable = false)
@@ -102,7 +104,6 @@ public class Usuario {
                 "id_usuario=" + id_usuario +
                 ", nombre='" + nombre + '\'' +
                 ", correo='" + correo + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", sobre_mi='" + sobre_mi + '\'' +
                 ", fecha_registro=" + fecha_registro +

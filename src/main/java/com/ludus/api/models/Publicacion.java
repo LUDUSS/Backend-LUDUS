@@ -11,10 +11,15 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_resenia", nullable = false, unique = true)
     private Integer id_resenia;
-    @Column(name = "id_usuario",nullable = false)
-    private  Integer id_usuario;
-    @Column(name = "id_juego", nullable = false)
-    private Integer id_juego;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_juego", nullable = false)
+    private Juego juego;
+
     @Column (name = "calificacion", nullable = false)
     private Double calificacion;
     @Column (name = "texto_resenia", nullable = false)
@@ -23,10 +28,10 @@ public class Publicacion {
     private LocalDateTime fecha_publicacion;
 
     // CONSTRUCTOR
-    public Publicacion(Integer id_resenia, Integer id_usuario,Integer id_juego, Double calificacion, String texto_resenia, LocalDateTime fecha_publicacion){
+    public Publicacion(Integer id_resenia, Usuario usuario, Juego juego, Double calificacion, String texto_resenia, LocalDateTime fecha_publicacion){
         this.id_resenia = id_resenia;
-        this.id_usuario = id_usuario;
-        this.id_juego = id_juego;
+        this.usuario = usuario;
+        this.juego = juego;
         this.calificacion = calificacion;
         this.texto_resenia = texto_resenia;
         this.fecha_publicacion = fecha_publicacion;
@@ -44,21 +49,21 @@ public class Publicacion {
         this.id_resenia = id_resenia;
     }//FIN setId_resenia
 
-    public Integer getId_usuario() {
-        return id_usuario;
-    }// fin getId_usuario
+    public Usuario getUsuario() {
+        return usuario;
+    }// getUsuario
 
-    public void setId_usuario(Integer id_usuario) {
-        this.id_usuario = id_usuario;
-    }// fin setId_usuario
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }// setUsuario
 
-    public Integer getId_juego() {
-        return id_juego;
-    }
+    public Juego getJuego() {
+        return juego;
+    }// getJuego
 
-    public void setId_juego(Integer id_juego) {
-        this.id_juego = id_juego;
-    }
+    public void setJuego(Juego juego) {
+        this.juego = juego;
+    }// setJuego
 
     public Double getCalificacion() {
         return calificacion;
@@ -89,8 +94,8 @@ public class Publicacion {
     public String toString() {
         return "Publicacion{" +
                 "id_resenia=" + id_resenia +
-                ", id_usuario=" + id_usuario +
-                ", id_juego=" + id_juego +
+                ", id_usuario=" + (usuario != null ? usuario.getId_usuario() : null) +
+                ", id_juego=" + (juego != null ? juego.getId_juego() : null) +
                 ", calificacion=" + calificacion +
                 ", texto_resenia='" + texto_resenia + '\'' +
                 ", fecha_publicacion=" + fecha_publicacion +

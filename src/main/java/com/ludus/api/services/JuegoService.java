@@ -52,16 +52,16 @@ public class JuegoService {
                 jg.setNombre_juego(nombreJuego);
             }
             if(categoria != null && !categoria.isBlank() ){
-                jg.setNombre_juego(categoria);
+                jg.setCategoria(categoria);
             }
             if(plataforma != null && !plataforma.isBlank() ){
-                jg.setNombre_juego(plataforma);
+                jg.setPlataforma(plataforma);
             }
             if(descripcion != null && !descripcion.isBlank() ){
-                jg.setNombre_juego(descripcion);
+                jg.setDescripcion(descripcion);
             }
             if(imagenUrl != null && !imagenUrl.isBlank() ){
-                jg.setNombre_juego(imagenUrl);
+                jg.setImagen_url(imagenUrl);
             }
             juego = jg;
             repository.save(juego);

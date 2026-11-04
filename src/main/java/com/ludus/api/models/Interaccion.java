@@ -7,7 +7,15 @@ import java.time.LocalDateTime;
 
 //POJO
 @Entity
-@Table(name = "interacciones")
+@Table(
+        name = "interacciones",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_usuario_resenia",
+                        columnNames = {"id_usuario", "id_resenia"}
+                )
+        }
+)
 
 public class Interaccion {
     @Id
@@ -15,49 +23,49 @@ public class Interaccion {
     @Column(name = "id_interaccion", nullable = false, unique = true)
     private Integer id_interaccion;
 
-    @Column(name = "fechas_like", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resenia", nullable = false)
+    private Publicacion publicacion;
+
+    @Column(name = "fecha_like", nullable = false)
     private LocalDateTime fecha_like;
 
-    // Clave foránea hacia Usuarios
-    //@ManyToOne
-    //@JoinColumn(name = "id_usuario", nullable = false)
-    //private Usuario usuario;
+    public Interaccion(
+            Usuario usuario,
+            Publicacion publicacion,
+            LocalDateTime fecha_like) {
 
-    // Clave foránea hacia Reseñas
-    //@ManyToOne
-    //@JoinColumn(name = "id_resenia", nullable = false)
-    //private Resenia resenia;
+        this.usuario = usuario;
+        this.publicacion = publicacion;
+        this.fecha_like = fecha_like;
+    }// constructor
 
     // Constructos vació
-    public Interaccion(){
+    public Interaccion() {
 
     } // Constructor vació
 
-    // Contructor temporar, antes de las claves foraneas, para probar que funcione
-    public Interaccion(Integer id_interaccion, LocalDateTime fecha_like) {
-        this.id_interaccion = id_interaccion;
-        this.fecha_like = fecha_like;
-    }// Constructor Iteraccion
+    public Usuario getUsuario() {
+        return usuario;
+    }// getUsuario
 
-    //Constructor para cuando ya contemos con las KF
-    //public Interaccion(Usuario usuario, Resenia resenia, LocalDateTime fechaLike) {
-     //   this.usuario = usuario;
-    //  this.resenia = resenia;
-    //  this.fechaLike = fechaLike;
-    //}  Constructor
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }// setUsuario
 
-    // Getters y Setters
+    public Publicacion getPublicacion() {
+        return publicacion;
+    }// getPublicacion
 
-    //public Usuario getUsuario() {return usuario;}
+    public void setPublicacion(Publicacion publicacion) {
+        this.publicacion = publicacion;
+    }// setPublicacion
 
-    //public void setUsuario(Usuario usuario) {this.usuario = usuario;}
-
-    // public Resenia getResenia() {return resenia;}
-
-   // public void setResenia(Resenia resenia) {this.resenia = resenia;}
-
-
-    public Integer getId_interacciones() {
+    public Integer getId_interaccion() {
         return id_interaccion;
     }
 

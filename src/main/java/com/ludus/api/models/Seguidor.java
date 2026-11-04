@@ -6,7 +6,15 @@ import java.time.LocalDateTime;
 
 // POJO
 @Entity
-@Table(name = "seguidores")
+@Table(
+        name = "seguidores",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_seguidor_seguido",
+                        columnNames = {"id_seguidor", "id_seguido"}
+                )
+        }
+)
 public class Seguidor {
 
     @Id
@@ -14,37 +22,33 @@ public class Seguidor {
     @Column(name = "id_seguimiento", nullable = false, unique = true)
     private Integer idSeguimiento;
 
-    // Clave foránea hacia Usuarios (el que da el seguir)
-    // Descomentar cuando exista Usuario.java y la tabla usuarios en MySQL
-    //@ManyToOne
-    //@JoinColumn(name = "id_seguidor", referencedColumnName = "id_usuario", nullable = false)
-    //private Usuario seguidor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "id_seguidor",
+            referencedColumnName = "id_usuario",
+            nullable = false
+    )
+    private Usuario seguidor;
 
-    // Clave foránea hacia Usuarios (el que recibe el seguido)
-    // Descomentar cuando exista Usuario.java y la tabla usuarios en MySQL
-    //@ManyToOne
-    //@JoinColumn(name = "id_seguido", referencedColumnName = "id_usuario", nullable = false)
-    //private Usuario seguido;
-
-    // Temporal, antes de las claves foráneas, para probar que funcione
-    @Column(name = "id_seguidor", nullable = false)
-    private Integer idSeguidor;
-
-    @Column(name = "id_seguido", nullable = false)
-    private Integer idSeguido;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "id_seguido",
+            referencedColumnName = "id_usuario",
+            nullable = false
+    )
+    private Usuario seguido;
 
     @Column(name = "fecha_seguimiento", nullable = false)
     private LocalDateTime fechaSeguimiento;
 
+    public Seguidor(Usuario seguidor, Usuario seguido, LocalDateTime fechaSeguimiento) {
+        this.seguidor = seguidor;
+        this.seguido = seguido;
+        this.fechaSeguimiento = fechaSeguimiento;
+    }// constructor
+
     // Constructor vacío
     public Seguidor() {
-    }
-
-    // Constructor temporal, antes de las claves foráneas
-    public Seguidor(Integer idSeguidor, Integer idSeguido, LocalDateTime fechaSeguimiento) {
-        this.idSeguidor = idSeguidor;
-        this.idSeguido = idSeguido;
-        this.fechaSeguimiento = fechaSeguimiento;
     }
 
     // Getters y Setters
@@ -56,21 +60,21 @@ public class Seguidor {
         this.idSeguimiento = idSeguimiento;
     }
 
-    public Integer getIdSeguidor() {
-        return idSeguidor;
-    }
+    public Usuario getSeguidor() {
+        return seguidor;
+    }// getSeguidor
 
-    public void setIdSeguidor(Integer idSeguidor) {
-        this.idSeguidor = idSeguidor;
-    }
+    public void setSeguidor(Usuario seguidor) {
+        this.seguidor = seguidor;
+    }// setSeguidor
 
-    public Integer getIdSeguido() {
-        return idSeguido;
-    }
+    public Usuario getSeguido() {
+        return seguido;
+    }// getSeguido
 
-    public void setIdSeguido(Integer idSeguido) {
-        this.idSeguido = idSeguido;
-    }
+    public void setSeguido(Usuario seguido) {
+        this.seguido = seguido;
+    }// setSeguido
 
     public LocalDateTime getFechaSeguimiento() {
         return fechaSeguimiento;
@@ -85,8 +89,10 @@ public class Seguidor {
     public String toString() {
         return "Seguidor{" +
                 "id_seguimiento=" + idSeguimiento +
-                ", id_seguidor=" + idSeguidor +
-                ", id_seguido=" + idSeguido +
+                ", id_seguidor=" +
+                (seguidor != null ? seguidor.getId_usuario() : null) +
+                ", id_seguido=" +
+                (seguido != null ? seguido.getId_usuario() : null) +
                 ", fecha_seguimiento=" + fechaSeguimiento +
                 '}';
     }

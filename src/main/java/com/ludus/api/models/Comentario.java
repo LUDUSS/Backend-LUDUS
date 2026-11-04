@@ -11,11 +11,13 @@ public class Comentario {
     @Column(name = "id_comentario", nullable = false, unique = true)
     private Integer id_comentario;
 
-    @Column(name = "id_resenia", nullable = false)
-    private Integer id_resenia;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resenia", nullable = false)
+    private Publicacion publicacion;
 
-    @Column(name = "id_usuario", nullable = false)
-    private Integer id_usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "texto_comentario", nullable = false, columnDefinition = "TEXT")
     private String texto_comentario;
@@ -23,28 +25,35 @@ public class Comentario {
     @Column(name = "fecha_comentario", nullable = false)
     private LocalDateTime fecha_comentario;
 
+    public Comentario(Publicacion publicacion, Usuario usuario, String texto_comentario, LocalDateTime fecha_comentario) {
+        this.publicacion = publicacion;
+        this.usuario = usuario;
+        this.texto_comentario = texto_comentario;
+        this.fecha_comentario = fecha_comentario;
+    }// constructor
+
     public Comentario() {
-    }
+    }// constructor vacío
 
     public Integer getId_comentario() {
         return id_comentario;
     }
 
-    public Integer getId_resenia() {
-        return id_resenia;
-    }
+    public Publicacion getPublicacion() {
+        return publicacion;
+    }// getPublicacion
 
-    public void setId_resenia(Integer id_resenia) {
-        this.id_resenia = id_resenia;
-    }
+    public void setPublicacion(Publicacion publicacion) {
+        this.publicacion = publicacion;
+    }// setPublicacion
 
-    public Integer getId_usuario() {
-        return id_usuario;
-    }
+    public Usuario getUsuario() {
+        return usuario;
+    }// getUsuario
 
-    public void setId_usuario(Integer id_usuario) {
-        this.id_usuario = id_usuario;
-    }
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }// setUsuario
 
     public String getTexto_comentario() {
         return texto_comentario;
