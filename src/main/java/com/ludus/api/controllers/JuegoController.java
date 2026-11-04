@@ -27,17 +27,17 @@ public class JuegoController {
         return service.getJuego(id_juego);
     }// getJuego
 
-    @GetMapping("{id_juego}")
+    @DeleteMapping("{id_juego}")
     public Juego deleteJuego(@PathVariable Integer id_juego){
         return service.deleteJuego(id_juego);
     }// deleteJuego
 
-    @GetMapping
+    @PostMapping
     public Juego addJuego(@RequestBody Juego juego){
         return service.addJuego(juego);
     }
 
-    @GetMapping("/{id_usuario}")
+    @PutMapping("/{id_juego}")
     public Juego updateJuego(@PathVariable Integer id_juego, @RequestBody Juego juego){
         return service.updateJuego(
                 id_juego,
