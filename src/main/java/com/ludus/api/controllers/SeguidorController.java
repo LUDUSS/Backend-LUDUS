@@ -44,7 +44,7 @@ public class SeguidorController {
 
     //dejar de seguir
     @DeleteMapping("{id_seguimiento}")
-    public Seguidor deleteSeguidor(@PathVariable Integer id_seguimiento) {
-        return service.deleteSeguidor(id_seguimiento);
+    public Seguidor deleteSeguidor(@PathVariable Integer idSeguimiento) {
+        return service.deleteSeguidor(idSeguimiento);
     }
 }// class SeguidorController

@@ -8,11 +8,11 @@ import java.util.List;
 public interface SeguidorRepository extends JpaRepository<Seguidor, Integer> {
 
     // A quiénes sigue un usuario (Siguiendo) — usa Integer temporal
-    List<Seguidor> findById_seguidor(Integer idSeguidor);
+    List<Seguidor> findByIdSeguidor(Integer idSeguidor);
 
     // Quiénes siguen a un usuario (Seguidores) — usa Integer temporal
-    List<Seguidor> findById_seguido(Integer idSeguido);
+    List<Seguidor> findByIdSeguido(Integer idSeguido);
 
     // Para evitar duplicados
-    boolean existsById_seguidorAndId_seguido(Integer idSeguidor, Integer idSeguido);
+    boolean existsByIdSeguidorAndIdSeguido(Integer idSeguidor, Integer idSeguido);
 }// interface SeguidorRepository

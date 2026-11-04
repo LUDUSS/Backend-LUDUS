@@ -12,7 +12,7 @@ public class Seguidor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_seguimiento", nullable = false, unique = true)
-    private Integer id_seguimiento;
+    private Integer idSeguimiento;
 
     // Clave foránea hacia Usuarios (el que da el seguir)
     // Descomentar cuando exista Usuario.java y la tabla usuarios en MySQL
@@ -28,66 +28,66 @@ public class Seguidor {
 
     // Temporal, antes de las claves foráneas, para probar que funcione
     @Column(name = "id_seguidor", nullable = false)
-    private Integer id_seguidor;
+    private Integer idSeguidor;
 
     @Column(name = "id_seguido", nullable = false)
-    private Integer id_seguido;
+    private Integer idSeguido;
 
     @Column(name = "fecha_seguimiento", nullable = false)
-    private LocalDateTime fecha_seguimiento;
+    private LocalDateTime fechaSeguimiento;
 
     // Constructor vacío
     public Seguidor() {
     }
 
     // Constructor temporal, antes de las claves foráneas
-    public Seguidor(Integer id_seguidor, Integer id_seguido, LocalDateTime fecha_seguimiento) {
-        this.id_seguidor = id_seguidor;
-        this.id_seguido = id_seguido;
-        this.fecha_seguimiento = fecha_seguimiento;
+    public Seguidor(Integer idSeguidor, Integer idSeguido, LocalDateTime fechaSeguimiento) {
+        this.idSeguidor = idSeguidor;
+        this.idSeguido = idSeguido;
+        this.fechaSeguimiento = fechaSeguimiento;
     }
 
     // Getters y Setters
-    public Integer getId_seguimiento() {
-        return id_seguimiento;
+    public Integer getIdSeguimiento() {
+        return idSeguimiento;
     }
 
-    public void setId_seguimiento(Integer id_seguimiento) {
-        this.id_seguimiento = id_seguimiento;
+    public void setIdSeguimiento(Integer idSeguimiento) {
+        this.idSeguimiento = idSeguimiento;
     }
 
-    public Integer getId_seguidor() {
-        return id_seguidor;
+    public Integer getIdSeguidor() {
+        return idSeguidor;
     }
 
-    public void setId_seguidor(Integer id_seguidor) {
-        this.id_seguidor = id_seguidor;
+    public void setIdSeguidor(Integer idSeguidor) {
+        this.idSeguidor = idSeguidor;
     }
 
-    public Integer getId_seguido() {
-        return id_seguido;
+    public Integer getIdSeguido() {
+        return idSeguido;
     }
 
-    public void setId_seguido(Integer id_seguido) {
-        this.id_seguido = id_seguido;
+    public void setIdSeguido(Integer idSeguido) {
+        this.idSeguido = idSeguido;
     }
 
-    public LocalDateTime getFecha_seguimiento() {
-        return fecha_seguimiento;
+    public LocalDateTime getFechaSeguimiento() {
+        return fechaSeguimiento;
     }
 
-    public void setFecha_seguimiento(LocalDateTime fecha_seguimiento) {
-        this.fecha_seguimiento = fecha_seguimiento;
+    public void setFechaSeguimiento(LocalDateTime fechaSeguimiento) {
+        this.fechaSeguimiento = fechaSeguimiento;
     }
 
     // toString
     @Override
     public String toString() {
         return "Seguidor{" +
-                "id_seguimiento=" + id_seguimiento +
-                ", id_seguidor=" + id_seguidor +
-                ", id_seguido=" + id_seguido +
-                ", fecha_seguimiento=" + fecha_seguimiento +
+                "id_seguimiento=" + idSeguimiento +
+                ", id_seguidor=" + idSeguidor +
+                ", id_seguido=" + idSeguido +
+                ", fecha_seguimiento=" + fechaSeguimiento +
                 '}';
     }
 }// class Seguidor
