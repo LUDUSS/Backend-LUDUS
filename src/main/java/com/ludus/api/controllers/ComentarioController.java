@@ -20,6 +20,11 @@ public class ComentarioController {
         return service.getComentariosPorResenia(id_resenia);
     }
 
+    @GetMapping
+    public List<Comentario> getAllComentarios() {
+        return service.getAllComentarios();
+    }
+
     @PostMapping
     public Comentario addComentario(@RequestBody Comentario comentario) {
         return service.addComentario(comentario);
