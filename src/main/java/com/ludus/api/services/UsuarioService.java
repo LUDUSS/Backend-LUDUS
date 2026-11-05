@@ -28,7 +28,14 @@ public class UsuarioService {
                 .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID ["+ id_usuario +"] no existe"));
     }
 
-    public Usuario deleteUsuario (Integer id_usuario){
+    public Usuario getUsuarioPorCorreo(String correo) {
+        if (correo == null || correo.isBlank()) {
+            return null;
+        }
+        return repository.findByCorreo(correo.trim().toLowerCase()).orElse(null);
+    }
+
+    public Usuario deleteUsuario(Integer id_usuario) {
         Usuario usuario = null;
         if(repository.existsById(id_usuario)){
             usuario = repository.findById(id_usuario).get();
@@ -75,10 +82,30 @@ public class UsuarioService {
             if (sobre_mi != null) {
                 us.setSobre_mi(sobre_mi);
             }
-
             usuario = us;
             repository.save(usuario);
         }
         return usuario;
+    }
+
+    public Usuario updatePrivacidad(Integer idUsuario, boolean perfilPublico) {
+        Usuario us = repository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
+        us.setPerfil_publico(perfilPublico);
+        return repository.save(us);
+    }
+
+    public Usuario updateJuegoActivo(Integer idUsuario, String juegoActivo) {
+        Usuario us = repository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
+        us.setJuego_activo(juegoActivo);
+        return repository.save(us);
+    }
+
+    public List<Usuario> buscarPorNombre(String q) {
+        if (q == null || q.isBlank()) {
+            return List.of();
+        }
+        return repository.findByNombreContainingIgnoreCase(q.trim());
     }
 }

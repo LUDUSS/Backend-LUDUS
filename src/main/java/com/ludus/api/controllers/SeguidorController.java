@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ludus/seguidor/")
+@RequestMapping(path = "/ludus/seguidor/")
 public class SeguidorController {
 
     private final SeguidorService service;
@@ -28,6 +28,7 @@ public class SeguidorController {
         return ResponseEntity.ok(service.getSiguiendo(id_usuario));
     }
 
+    // Quiénes siguen a un usuario (seguidores)
     @GetMapping("seguidores/{id_usuario}")
     public ResponseEntity<List<Seguidor>> getSeguidoresDe(@PathVariable Integer id_usuario) {
         return ResponseEntity.ok(service.getSeguidoresDe(id_usuario));
@@ -39,9 +40,16 @@ public class SeguidorController {
         return new ResponseEntity<>(nuevoSeguimiento, HttpStatus.CREATED);
     }
 
+    // Dejar de seguir por ID de seguimiento
     @DeleteMapping("{id_seguimiento}")
     public ResponseEntity<Void> deleteSeguidor(@PathVariable Integer id_seguimiento) {
         service.deleteSeguidor(id_seguimiento);
         return ResponseEntity.noContent().build();
+    }
+
+    // Dejar de seguir por pareja (seguidor y seguido)
+    @DeleteMapping("dejar")
+    public Seguidor dejarDeSeguir(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
+        return service.deleteSeguidor(idSeguidor, idSeguido);
     }
 }

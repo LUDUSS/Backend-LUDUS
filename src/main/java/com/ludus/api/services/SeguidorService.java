@@ -54,10 +54,22 @@ public class SeguidorService {
         return repository.save(nuevo);
     }
 
-    public void deleteSeguidor(Integer idSeguimiento) {
-        if (!repository.existsById(idSeguimiento)) {
-            throw new IllegalArgumentException("El seguimiento con ID " + idSeguimiento + " no existe.");
+    public Seguidor deleteSeguidor(Integer idSeguimiento) {
+        Seguidor seguidor = null;
+        if (repository.existsById(idSeguimiento)) {
+            seguidor = repository.findById(idSeguimiento).get();
+            repository.delete(seguidor);
         }
-        repository.deleteById(idSeguimiento);
+        return seguidor;
+    }
+
+    // Dejar de seguir sin conocer el id del seguimiento (el frontend lo necesita)
+    public Seguidor deleteSeguidor(Integer idSeguidor, Integer idSeguido) {
+        return repository.findBySeguidorIdAndSeguidoId(idSeguidor, idSeguido)
+                .map(s -> {
+                    repository.delete(s);
+                    return s;
+                })
+                .orElse(null);
     }
 }
