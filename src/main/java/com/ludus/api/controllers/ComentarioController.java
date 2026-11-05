@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ludus/comentario/")
+
 public class ComentarioController {
     private final ComentarioService service;
 

@@ -41,11 +41,15 @@ public class JwtFilter extends GenericFilterBean {
         String metodo = httpRequest.getMethod();
         String URI = httpRequest.getRequestURI();
 
+        if (metodo.equalsIgnoreCase("OPTIONS")) {
+            return false;
+        }
+
 
         // 1. Permitimos POST en /ludus/login y /ludus/usuario/ sin token (para iniciar sesión y registrarse)
         // 2. Exigimos token para POST, PUT, DELETE en cualquier otra ruta de /ludus/
         // 3. Exigimos token para GET que no sea /ludus/login o /ludus/usuario/
-        if (URI.contains("/ludus/login") || (metodo.equals("POST") && URI.contains("/ludus/usuario/"))) {
+        if (URI.contains("/ludus/login") || (metodo.equals("POST") && URI.startsWith("/ludus/usuario"))) {
             return false; // No requiere token
         }
         return true; // Todo lo demás requiere token
