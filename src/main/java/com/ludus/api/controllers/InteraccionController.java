@@ -12,7 +12,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/ludus/interaccion/")
-@CrossOrigin(origins = "*")
 public class InteraccionController {
 
     private final InteraccionesService service;

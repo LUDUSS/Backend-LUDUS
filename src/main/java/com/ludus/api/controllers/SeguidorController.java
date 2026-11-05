@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ludus/seguidor/")
-@CrossOrigin(origins = "*")
 public class SeguidorController {
 
     private final SeguidorService service;

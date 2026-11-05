@@ -27,10 +27,6 @@ public class UsuarioService {
         return repository.findById(id_usuario)
                 .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID ["+ id_usuario +"] no existe"));
     }
-        return repository
-                .findById(id_usuario)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID [" + id_usuario + "] no existe"));
-    }
 
     public Usuario getUsuarioPorCorreo(String correo) {
         if (correo == null || correo.isBlank()) {

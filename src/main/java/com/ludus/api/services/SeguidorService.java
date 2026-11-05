@@ -34,7 +34,7 @@ public class SeguidorService {
 
     public Seguidor addSeguidor(Integer idSeguidor, Integer idSeguido) {
         if (idSeguidor.equals(idSeguido)) {
-            throw new IllegalArgumentException("Un usuario no puede seguirse a sÃ­ mismo");
+            throw new IllegalArgumentException("Un usuario no puede seguirse a sí mismo");
         }
 
         if (repository.existsBySeguidorIdAndSeguidoId(idSeguidor, idSeguido)) {
@@ -59,14 +59,17 @@ public class SeguidorService {
         if (repository.existsById(idSeguimiento)) {
             seguidor = repository.findById(idSeguimiento).get();
             repository.delete(seguidor);
-        }// if
+        }
         return seguidor;
-    }// deleteSeguidor
+    }
 
     // Dejar de seguir sin conocer el id del seguimiento (el frontend lo necesita)
     public Seguidor deleteSeguidor(Integer idSeguidor, Integer idSeguido) {
-        return repository.findByIdSeguidorAndIdSeguido(idSeguidor, idSeguido)
-                .map(s -> { repository.delete(s); return s; })
+        return repository.findBySeguidorIdAndSeguidoId(idSeguidor, idSeguido)
+                .map(s -> {
+                    repository.delete(s);
+                    return s;
+                })
                 .orElse(null);
-    }// deleteSeguidor por par
-}// class SeguidorService
+    }
+}

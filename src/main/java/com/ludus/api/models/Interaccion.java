@@ -1,6 +1,5 @@
 package com.ludus.api.models;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -20,67 +19,27 @@ public class Interaccion {
     // Clave foránea hacia Usuarios
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Usuario usuario;
 
     // Clave foránea hacia Reseñas
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_resenia", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Publicacion publicacion;
 
-    // Constructos vació
-    public Interaccion(){
-
-    } // Constructor vació
     // Constructor vacío
     public Interaccion() {
     }
 
-    public Interaccion(Integer id_interaccion, Integer idUsuario, Integer idResenia, LocalDateTime fecha_like) {
+    public Interaccion(Integer id_interaccion, Usuario usuario, Publicacion publicacion, LocalDateTime fecha_like) {
         this.id_interaccion = id_interaccion;
-        this.idUsuario = idUsuario;
-        this.idResenia = idResenia;
+        this.usuario = usuario;
+        this.publicacion = publicacion;
         this.fecha_like = fecha_like;
     }
 
     // Getters y Setters
-    public Integer getId_usuario() {
-        return idUsuario;
-    }
-
-    public void setId_usuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public Integer getId_resenia() {
-        return idResenia;
-    }
-
-    public void setId_resenia(Integer idResenia) {
-        this.idResenia = idResenia;
-    }
-
-    public Integer getIdResenia() {
-        return idResenia;
-    }
-
-    public void setIdResenia(Integer idResenia) {
-        this.idResenia = idResenia;
-    }
-
-    public Integer getId_interacciones() {
-        return id_interaccion;
-    }
-
     public Integer getId_interaccion() {
         return id_interaccion;
     }
@@ -89,11 +48,42 @@ public class Interaccion {
         this.id_interaccion = id_interaccion;
     }
 
+    public Integer getId_interacciones() {
+        return id_interaccion;
+    }
+
     public LocalDateTime getFecha_like() {
         return fecha_like;
     }
 
     public void setFecha_like(LocalDateTime fecha_like) {
         this.fecha_like = fecha_like;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Publicacion getPublicacion() {
+        return publicacion;
+    }
+
+    public void setPublicacion(Publicacion publicacion) {
+        this.publicacion = publicacion;
+    }
+
+    // Métodos auxiliares para obtener IDs fácilmente
+    @Transient
+    public Integer getIdUsuario() {
+        return usuario != null ? usuario.getId_usuario() : null;
+    }
+
+    @Transient
+    public Integer getIdResenia() {
+        return publicacion != null ? publicacion.getId_resenia() : null;
     }
 }

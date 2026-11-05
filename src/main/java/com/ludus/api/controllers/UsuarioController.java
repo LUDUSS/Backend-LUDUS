@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ludus/usuario/")
-@CrossOrigin(origins = "*")
 public class UsuarioController {
     private final UsuarioService service;
 
