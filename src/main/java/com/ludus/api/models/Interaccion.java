@@ -1,21 +1,13 @@
 package com.ludus.api.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 //POJO
 @Entity
-@Table(
-        name = "interacciones",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_usuario_resenia",
-                        columnNames = {"id_usuario", "id_resenia"}
-                )
-        }
-)
+@Table(name = "interacciones")
 
 public class Interaccion {
     @Id
@@ -23,61 +15,34 @@ public class Interaccion {
     @Column(name = "id_interaccion", nullable = false, unique = true)
     private Integer id_interaccion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_resenia", nullable = false)
-    private Publicacion publicacion;
 
     @Column(name = "fecha_like", nullable = false)
     private LocalDateTime fecha_like;
 
-    public Interaccion(
-            Usuario usuario,
-            Publicacion publicacion,
-            LocalDateTime fecha_like) {
+    // Clave foránea hacia Usuarios
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Usuario usuario;
 
-        this.usuario = usuario;
-        this.publicacion = publicacion;
-        this.fecha_like = fecha_like;
-    }// constructor
+    // Clave foránea hacia Reseñas
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resenia", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Publicacion publicacion;
 
     // Constructos vació
-    public Interaccion() {
+    public Interaccion(){
 
     } // Constructor vació
 
-    public Usuario getUsuario() {
-        return usuario;
-    }// getUsuario
+    public Integer getId_interaccion() { return id_interaccion; }
+    public void setId_interaccion(Integer id_interaccion) { this.id_interaccion = id_interaccion; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public Publicacion getPublicacion() { return publicacion; }
+    public void setPublicacion(Publicacion publicacion) { this.publicacion = publicacion; }
+    public LocalDateTime getFecha_like() { return fecha_like; }
+    public void setFecha_like(LocalDateTime fecha_like) { this.fecha_like = fecha_like; }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }// setUsuario
-
-    public Publicacion getPublicacion() {
-        return publicacion;
-    }// getPublicacion
-
-    public void setPublicacion(Publicacion publicacion) {
-        this.publicacion = publicacion;
-    }// setPublicacion
-
-    public Integer getId_interaccion() {
-        return id_interaccion;
-    }
-
-    public void setId_interaccion(Integer id_interaccion) {
-        this.id_interaccion = id_interaccion;
-    }
-
-    public LocalDateTime getFecha_like() {
-        return fecha_like;
-    }
-
-    public void setFecha_like(LocalDateTime fecha_like) {
-        this.fecha_like = fecha_like;
-    }
 } // class Interacion

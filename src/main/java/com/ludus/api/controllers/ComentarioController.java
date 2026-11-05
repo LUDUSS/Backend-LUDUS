@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ludus/comentario/")
+
 public class ComentarioController {
     private final ComentarioService service;
 
@@ -18,6 +19,11 @@ public class ComentarioController {
     @GetMapping("resenia/{id_resenia}")
     public List<Comentario> getComentariosPorResenia(@PathVariable Integer id_resenia) {
         return service.getComentariosPorResenia(id_resenia);
+    }
+
+    @GetMapping
+    public List<Comentario> getAllComentarios() {
+        return service.getAllComentarios();
     }
 
     @PostMapping
