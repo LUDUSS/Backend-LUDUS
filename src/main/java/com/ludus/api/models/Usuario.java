@@ -23,6 +23,11 @@ public class Usuario {
     private String sobre_mi;
     @Column (name = "fecha_registro", nullable = false)
     private LocalDateTime fecha_registro;
+    @Column(name = "perfil_publico", nullable = false)
+    private boolean perfil_publico = true;
+
+    @Column(name = "juego_activo")
+    private String juego_activo;
 
     // CONSTRUCTOR
     public Usuario(Integer id_usuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi, LocalDateTime fecha_registro) {
@@ -35,9 +40,9 @@ public class Usuario {
         this.fecha_registro = fecha_registro;
     }// fin CONSTRUCTOR
 
-    public Usuario(){}// CONSTRUCTOR VACÍO
+    public Usuario(){}// CONSTRUCTOR VACÃO
 
-// MÉTODOS GET Y SET
+// MÃ‰TODOS GET Y SET
 
     public Integer getId_usuario() {
         return id_usuario;
@@ -95,6 +100,22 @@ public class Usuario {
         this.fecha_registro = fecha_registro;
     }
 
+
+    public boolean isPerfil_publico() {
+        return perfil_publico;
+    }
+
+    public void setPerfil_publico(boolean perfil_publico) {
+        this.perfil_publico = perfil_publico;
+    }
+
+    public String getJuego_activo() {
+        return juego_activo;
+    }
+
+    public void setJuego_activo(String juego_activo) {
+        this.juego_activo = juego_activo;
+    }
     // METODO TO STRING
     @Override
     public String toString() {

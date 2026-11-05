@@ -3,53 +3,64 @@ package com.ludus.api.services;
 import com.ludus.api.models.Usuario;
 import com.ludus.api.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class UsuarioService {
-    // conectar UsuarioRepository
     private final UsuarioRepository repository;
-    // CONSTRUCTOR DE UsuarioService
-    public UsuarioService(UsuarioRepository repository){
-        this.repository = repository;
-    }// fin constructor
 
-    public List<Usuario> getUsuario(){
-        return  repository.findAll(); // -> QUERY (SELECT * FROM Usuario)
+    public UsuarioService(UsuarioRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<Usuario> getUsuario() {
+        return repository.findAll();
     }
 
     public Usuario getUsuario(Integer id_usuario) {
         return repository
                 .findById(id_usuario)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID ["+ id_usuario +"] no existe"));
-    }// fin getUsuario(id)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID [" + id_usuario + "] no existe"));
+    }
 
-    public Usuario deleteUsuario (Integer id_usuario){
+    public Usuario getUsuarioPorCorreo(String correo) {
+        if (correo == null || correo.isBlank()) {
+            return null;
+        }
+        return repository.findByCorreo(correo.trim().toLowerCase()).orElse(null);
+    }
+
+    public Usuario deleteUsuario(Integer id_usuario) {
         Usuario usuario = null;
-        if(repository.existsById(id_usuario)){// buscar el usuario por id
+        if (repository.existsById(id_usuario)) {
             usuario = repository.findById(id_usuario).get();
             repository.delete(usuario);
-        }// fin if
+        }
         return usuario;
-    }// fin deleteUsuario
+    }
 
-    // Crear un nuevo usuario
-    public Usuario addUsuario(Usuario usuario){
-        // validacion
-                if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
-            repository.save(usuario);
-        }// fin if
-        return usuario;
-    }// fin addUsuario
+    public Usuario addUsuario(Usuario usuario) {
+        if (!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank()) {
+            if (usuario.getFecha_registro() == null) {
+                usuario.setFecha_registro(LocalDateTime.now());
+            }
+            if (usuario.getSobre_mi() == null) {
+                usuario.setSobre_mi("");
+            }
+            if (usuario.getTelefono() == null) {
+                usuario.setTelefono("");
+            }
+            return repository.save(usuario);
+        }
+        throw new IllegalArgumentException("Los campos obligatorios de usuario no pueden estar vacíos.");
+    }
 
     public Usuario updateUsuario(Integer idUsuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi) {
         Usuario usuario = null;
-        // encontrar el usuario con el id
-        if(repository.existsById(idUsuario)){
+        if (repository.existsById(idUsuario)) {
             Usuario us = repository.findById(idUsuario).get();
-            // Actualizar campos solo si se proporcionan nuevos valores válidos
             if (nombre != null && !nombre.isBlank()) {
                 us.setNombre(nombre);
             }
@@ -65,11 +76,30 @@ public class UsuarioService {
             if (sobre_mi != null) {
                 us.setSobre_mi(sobre_mi);
             }
-
             usuario = us;
             repository.save(usuario);
         }
-
         return usuario;
-    } // fin updateUsuario
-}// fin class UsuarioService
+    }
+
+    public Usuario updatePrivacidad(Integer idUsuario, boolean perfilPublico) {
+        Usuario us = repository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
+        us.setPerfil_publico(perfilPublico);
+        return repository.save(us);
+    }
+
+    public Usuario updateJuegoActivo(Integer idUsuario, String juegoActivo) {
+        Usuario us = repository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
+        us.setJuego_activo(juegoActivo);
+        return repository.save(us);
+    }
+
+    public List<Usuario> buscarPorNombre(String q) {
+        if (q == null || q.isBlank()) {
+            return List.of();
+        }
+        return repository.findByNombreContainingIgnoreCase(q.trim());
+    }
+}

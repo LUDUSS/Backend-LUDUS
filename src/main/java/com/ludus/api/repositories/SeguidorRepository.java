@@ -7,12 +7,14 @@ import java.util.List;
 
 public interface SeguidorRepository extends JpaRepository<Seguidor, Integer> {
 
-    // A quiénes sigue un usuario (Siguiendo) — usa Integer temporal
+    // A quiÃ©nes sigue un usuario (Siguiendo) â€” usa Integer temporal
     List<Seguidor> findByIdSeguidor(Integer idSeguidor);
 
-    // Quiénes siguen a un usuario (Seguidores) — usa Integer temporal
+    // QuiÃ©nes siguen a un usuario (Seguidores) â€” usa Integer temporal
     List<Seguidor> findByIdSeguido(Integer idSeguido);
 
     // Para evitar duplicados
     boolean existsByIdSeguidorAndIdSeguido(Integer idSeguidor, Integer idSeguido);
+    // Buscar registro de seguimiento por par (para dejar de seguir sin conocer el id)
+    java.util.Optional<Seguidor> findByIdSeguidorAndIdSeguido(Integer idSeguidor, Integer idSeguido);
 }// interface SeguidorRepository

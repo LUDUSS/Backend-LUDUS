@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ludus/seguidor/")
+@CrossOrigin(origins = "*")
 public class SeguidorController {
 
     private final SeguidorService service;
@@ -16,35 +17,41 @@ public class SeguidorController {
     @Autowired
     public SeguidorController(SeguidorService service) {
         this.service = service;
-    }// constructor
+    }
 
-    //ver todos los registros de seguimiento
+    // Ver todos los registros de seguimiento
     @GetMapping
     public List<Seguidor> getSeguidores() {
         return service.getSeguidores();
     }
 
-    //siguiendo
+    // A quiénes sigue un usuario (siguiendo)
     @GetMapping("siguiendo/{id_usuario}")
     public List<Seguidor> getSiguiendo(@PathVariable Integer id_usuario) {
         return service.getSiguiendo(id_usuario);
     }
 
-    //seguidores
+    // Quiénes siguen a un usuario (seguidores)
     @GetMapping("seguidores/{id_usuario}")
-    public List<Seguidor> getSeguidoresDe (@PathVariable Integer id_usuario) {
+    public List<Seguidor> getSeguidoresDe(@PathVariable Integer id_usuario) {
         return service.getSeguidoresDe(id_usuario);
     }
 
-    //seguir
+    // Seguir a un usuario
     @PostMapping("seguir")
     public Seguidor addSeguidor(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
         return service.addSeguidor(idSeguidor, idSeguido);
     }
 
-    //dejar de seguir
+    // Dejar de seguir por ID de seguimiento
     @DeleteMapping("{id_seguimiento}")
     public Seguidor deleteSeguidor(@PathVariable Integer idSeguimiento) {
         return service.deleteSeguidor(idSeguimiento);
     }
-}// class SeguidorController
+
+    // Dejar de seguir por pareja (seguidor y seguido)
+    @DeleteMapping("dejar")
+    public Seguidor dejarDeSeguir(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
+        return service.deleteSeguidor(idSeguidor, idSeguido);
+    }
+}

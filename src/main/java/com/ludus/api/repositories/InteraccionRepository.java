@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface InteraccionRepository extends JpaRepository<Interaccion, Integer> {
-}// interface InteraccionesRepository
+
+    java.util.List<Interaccion> findByIdResenia(Integer idResenia);
+    boolean existsByIdUsuarioAndIdResenia(Integer idUsuario, Integer idResenia);
+    java.util.Optional<Interaccion> findByIdUsuarioAndIdResenia(Integer idUsuario, Integer idResenia);}// interface InteraccionesRepository

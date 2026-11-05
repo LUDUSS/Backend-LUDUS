@@ -29,16 +29,16 @@ public class SeguidorService {
     }// getFollowers
 
     public Seguidor addSeguidor(Integer idSeguidor, Integer idSeguido) {
-        // No seguirse a sí mismo
+        // No seguirse a sÃ­ mismo
         if (idSeguidor.equals(idSeguido)) {
-            throw new IllegalArgumentException("Un usuario no puede seguirse a sí mismo");
+            throw new IllegalArgumentException("Un usuario no puede seguirse a sÃ­ mismo");
         }
         // Evitar duplicados
         if (repository.existsByIdSeguidorAndIdSeguido(idSeguidor, idSeguido)) {
             throw new IllegalArgumentException("El usuario " + idSeguidor + " ya sigue al usuario " + idSeguido);
         }
 
-        // Temporal: no validamos que los usuarios existan (eso vendrá con @ManyToOne)
+        // Temporal: no validamos que los usuarios existan (eso vendrÃ¡ con @ManyToOne)
         Seguidor nuevo = new Seguidor(idSeguidor, idSeguido, LocalDateTime.now());
         return repository.save(nuevo);
     }// addSeguidor
@@ -51,4 +51,11 @@ public class SeguidorService {
         }// if
         return seguidor;
     }// deleteSeguidor
+
+    // Dejar de seguir sin conocer el id del seguimiento (el frontend lo necesita)
+    public Seguidor deleteSeguidor(Integer idSeguidor, Integer idSeguido) {
+        return repository.findByIdSeguidorAndIdSeguido(idSeguidor, idSeguido)
+                .map(s -> { repository.delete(s); return s; })
+                .orElse(null);
+    }// deleteSeguidor por par
 }// class SeguidorService

@@ -4,6 +4,7 @@ import com.ludus.api.models.Interaccion;
 import com.ludus.api.repositories.InteraccionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -13,33 +14,52 @@ public class InteraccionesService {
 
     public InteraccionesService(InteraccionRepository repository) {
         this.repository = repository;
-    }// constructor
+    }
 
     public List<Interaccion> getInteracciones() {
         return repository.findAll();
-    } // getInteracciones
+    }
 
     public Interaccion getInteraccion(Integer id_interaccion) {
         return repository
                 .findById(id_interaccion)
-                .orElseThrow( () -> new IllegalArgumentException("La publicación con el id [" + id_interaccion + "] no existe."));
-    } // getInteraccion
+                .orElseThrow(() -> new IllegalArgumentException("La publicación con el id [" + id_interaccion + "] no existe."));
+    }
 
     public Interaccion addInteraccion(Interaccion interaccion) {
-        if (interaccion.getFecha_like() != null) { // No olvidar guardar los parametros faltantes cuando se agregen las FK
-            return repository.save(interaccion);
+        if (interaccion.getFecha_like() == null) {
+            interaccion.setFecha_like(LocalDateTime.now());
         }
-        throw new IllegalArgumentException("La fecha de la interacción no puede ser nula");
-    }// addInteraccion
+        return repository.save(interaccion);
+    }
 
     public Interaccion deleteInteraccion(Integer id_interaccion) {
         Interaccion interaccion = null;
-
-        if(repository.existsById(id_interaccion)){
+        if (repository.existsById(id_interaccion)) {
             interaccion = repository.findById(id_interaccion).get();
             repository.delete(interaccion);
-        }// if
-
+        }
         return interaccion;
-    } // deleteInteraccion
-} // class InteraccionesService
+    }
+
+    public Interaccion toggleLike(Integer idUsuario, Integer idResenia) {
+        if (repository.existsByIdUsuarioAndIdResenia(idUsuario, idResenia)) {
+            Interaccion i = repository.findByIdUsuarioAndIdResenia(idUsuario, idResenia).get();
+            repository.delete(i);
+            return i;
+        }
+        Interaccion nuevo = new Interaccion();
+        nuevo.setIdUsuario(idUsuario);
+        nuevo.setIdResenia(idResenia);
+        nuevo.setFecha_like(LocalDateTime.now());
+        return repository.save(nuevo);
+    }
+
+    public long contarLikes(Integer idResenia) {
+        return repository.findByIdResenia(idResenia).size();
+    }
+
+    public boolean yaLikeado(Integer idUsuario, Integer idResenia) {
+        return repository.existsByIdUsuarioAndIdResenia(idUsuario, idResenia);
+    }
+}
