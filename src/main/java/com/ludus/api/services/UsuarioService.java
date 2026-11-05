@@ -2,54 +2,64 @@ package com.ludus.api.services;
 
 import com.ludus.api.models.Usuario;
 import com.ludus.api.repositories.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class UsuarioService {
-    // conectar UsuarioRepository
+
     private final UsuarioRepository repository;
-    // CONSTRUCTOR DE UsuarioService
-    public UsuarioService(UsuarioRepository repository){
+    private final PasswordEncoder passwordEncoder; // <--- Inyectamos el encriptador
+
+    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder){
         this.repository = repository;
-    }// fin constructor
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<Usuario> getUsuario(){
-        return  repository.findAll(); // -> QUERY (SELECT * FROM Usuario)
+        return repository.findAll();
     }
 
     public Usuario getUsuario(Integer id_usuario) {
-        return repository
-                .findById(id_usuario)
+        return repository.findById(id_usuario)
                 .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID ["+ id_usuario +"] no existe"));
-    }// fin getUsuario(id)
+    }
 
     public Usuario deleteUsuario (Integer id_usuario){
         Usuario usuario = null;
-        if(repository.existsById(id_usuario)){// buscar el usuario por id
+        if(repository.existsById(id_usuario)){
             usuario = repository.findById(id_usuario).get();
             repository.delete(usuario);
-        }// fin if
+        }
         return usuario;
-    }// fin deleteUsuario
+    }
 
-    // Crear un nuevo usuario
     public Usuario addUsuario(Usuario usuario){
-        // validacion
-                if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
-            repository.save(usuario);
-        }// fin if
-        return usuario;
-    }// fin addUsuario
+        if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+
+            // Encriptamos usando el bean inyectado
+            usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
+
+            if(usuario.getFecha_registro() == null) {
+                usuario.setFecha_registro(LocalDateTime.now());
+            }
+
+            if(usuario.getSobre_mi() == null) {
+                usuario.setSobre_mi("");
+            }
+
+            return repository.save(usuario);
+        }
+        throw new IllegalArgumentException("Faltan campos obligatorios del usuario");
+    }
 
     public Usuario updateUsuario(Integer idUsuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi) {
         Usuario usuario = null;
-        // encontrar el usuario con el id
         if(repository.existsById(idUsuario)){
             Usuario us = repository.findById(idUsuario).get();
-            // Actualizar campos solo si se proporcionan nuevos valores válidos
             if (nombre != null && !nombre.isBlank()) {
                 us.setNombre(nombre);
             }
@@ -57,7 +67,7 @@ public class UsuarioService {
                 us.setCorreo(correo);
             }
             if (contrasenia != null && !contrasenia.isBlank()) {
-                us.setContrasenia(contrasenia);
+                us.setContrasenia(passwordEncoder.encode(contrasenia)); // Encriptamos aquí también
             }
             if (telefono != null && !telefono.isBlank()) {
                 us.setTelefono(telefono);
@@ -69,7 +79,6 @@ public class UsuarioService {
             usuario = us;
             repository.save(usuario);
         }
-
         return usuario;
-    } // fin updateUsuario
-}// fin class UsuarioService
+    }
+}
