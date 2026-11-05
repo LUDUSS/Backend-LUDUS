@@ -2,7 +2,8 @@ package com.ludus.api.controllers;
 
 import com.ludus.api.models.Seguidor;
 import com.ludus.api.services.SeguidorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,39 +15,37 @@ public class SeguidorController {
 
     private final SeguidorService service;
 
-    @Autowired
     public SeguidorController(SeguidorService service) {
         this.service = service;
     }
 
-    // Ver todos los registros de seguimiento
     @GetMapping
-    public List<Seguidor> getSeguidores() {
-        return service.getSeguidores();
+    public ResponseEntity<List<Seguidor>> getSeguidores() {
+        return ResponseEntity.ok(service.getSeguidores());
     }
 
-    // A quiénes sigue un usuario (siguiendo)
     @GetMapping("siguiendo/{id_usuario}")
-    public List<Seguidor> getSiguiendo(@PathVariable Integer id_usuario) {
-        return service.getSiguiendo(id_usuario);
+    public ResponseEntity<List<Seguidor>> getSiguiendo(@PathVariable Integer id_usuario) {
+        return ResponseEntity.ok(service.getSiguiendo(id_usuario));
     }
 
     // Quiénes siguen a un usuario (seguidores)
     @GetMapping("seguidores/{id_usuario}")
-    public List<Seguidor> getSeguidoresDe(@PathVariable Integer id_usuario) {
-        return service.getSeguidoresDe(id_usuario);
+    public ResponseEntity<List<Seguidor>> getSeguidoresDe(@PathVariable Integer id_usuario) {
+        return ResponseEntity.ok(service.getSeguidoresDe(id_usuario));
     }
 
-    // Seguir a un usuario
     @PostMapping("seguir")
-    public Seguidor addSeguidor(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
-        return service.addSeguidor(idSeguidor, idSeguido);
+    public ResponseEntity<Seguidor> addSeguidor(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
+        Seguidor nuevoSeguimiento = service.addSeguidor(idSeguidor, idSeguido);
+        return new ResponseEntity<>(nuevoSeguimiento, HttpStatus.CREATED);
     }
 
     // Dejar de seguir por ID de seguimiento
     @DeleteMapping("{id_seguimiento}")
-    public Seguidor deleteSeguidor(@PathVariable Integer idSeguimiento) {
-        return service.deleteSeguidor(idSeguimiento);
+    public ResponseEntity<Void> deleteSeguidor(@PathVariable Integer id_seguimiento) {
+        service.deleteSeguidor(id_seguimiento);
+        return ResponseEntity.noContent().build();
     }
 
     // Dejar de seguir por pareja (seguidor y seguido)

@@ -1,5 +1,7 @@
 package com.ludus.api.models;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -12,15 +14,25 @@ public class Interaccion {
     @Column(name = "id_interaccion", nullable = false, unique = true)
     private Integer id_interaccion;
 
-    @Column(name = "id_usuario", nullable = false)
-    private Integer idUsuario;
-
-    @Column(name = "id_resenia", nullable = false)
-    private Integer idResenia;
-
     @Column(name = "fechas_like", nullable = false)
     private LocalDateTime fecha_like;
 
+    // Clave foránea hacia Usuarios
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Usuario usuario;
+
+    // Clave foránea hacia Reseñas
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resenia", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Publicacion publicacion;
+
+    // Constructos vació
+    public Interaccion(){
+
+    } // Constructor vació
     // Constructor vacío
     public Interaccion() {
     }

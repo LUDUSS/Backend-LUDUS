@@ -13,11 +13,12 @@ public class Usuario {
     private Integer id_usuario;
     @Column (name = "nombre", nullable = false)
     private String nombre;
-    @Column (name = "correo", nullable = false)
+    @Column (name = "correo", nullable = false , unique = true)
     private String correo;
     @Column (name = "contrasenia", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     private String contrasenia;
-    @Column (name = "telefono", nullable = false)
+    @Column (name = "telefono", nullable = false , unique = true)
     private String telefono;
     @Column (name = "sobre_mi", nullable = false)
     private String sobre_mi;
