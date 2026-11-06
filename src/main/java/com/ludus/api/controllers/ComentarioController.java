@@ -10,6 +10,7 @@ import java.util.List;
 @RequestMapping(path = "/ludus/comentario/")
 
 public class ComentarioController {
+    @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.security.CurrentUser current;
     private final ComentarioService service;
 
     public ComentarioController(ComentarioService service) {
@@ -28,6 +29,8 @@ public class ComentarioController {
 
     @PostMapping
     public Comentario addComentario(@RequestBody Comentario comentario) {
+        comentario.setId_comentario(null);
+        comentario.setUsuario(current.get());
         return service.addComentario(comentario);
     }
 }

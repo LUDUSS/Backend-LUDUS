@@ -11,21 +11,21 @@ public class Juego {
     @Column(name = "id_juego", nullable = false, unique = true)
     private Integer id_juego;
     @Column(name = "id_api", nullable = false, unique = true)
-    private Integer id_api;
-    @Column(name = "nombre_juego", nullable = false)
+    private Long id_api;
+    @Column(name = "nombre_juego", nullable = false, columnDefinition = "TEXT")
     private String nombre_juego;
-    @Column(name = "categoria", nullable = false)
+    @Column(name = "categoria", columnDefinition = "TEXT")
     private String categoria;
-    @Column(name = "plataforma", nullable = false)
+    @Column(name = "plataforma", columnDefinition = "TEXT")
     private String plataforma;
-    @Column(name = "descripcion", nullable = false)
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
-    @Column(name = "imagen_url", nullable = false)
+    @Column(name = "imagen_url", columnDefinition = "TEXT")
     private String imagen_url;
 
     public Juego(Integer id_juego, Integer id_api, String nombre_juego, String categoria, String plataforma, String descripcion, String imagen_url) {
         this.id_juego = id_juego;
-        this.id_api = id_api;
+        this.id_api = id_api == null ? null : id_api.longValue();
         this.nombre_juego = nombre_juego;
         this.categoria = categoria;
         this.plataforma = plataforma;
@@ -39,11 +39,11 @@ public class Juego {
         return id_juego;
     }// getId_juego
 
-    public Integer getId_api() {
+    public Long getId_api() {
         return id_api;
     }// getId_api
 
-    public void setId_api(Integer id_api) {
+    public void setId_api(Long id_api) {
         this.id_api = id_api;
     }// setId_api
 

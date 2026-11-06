@@ -1,6 +1,7 @@
 package com.ludus.api.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -11,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.GenericFilterBean;
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -31,8 +33,19 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
 
         if(requiereAutenticacion(httpRequest)){
-            String token = obtenerToken(httpRequest);
-            validarToken(token);
+            try {
+                String token = obtenerToken(httpRequest);
+                Claims claims = validarToken(token);
+                httpRequest.setAttribute("ludus.correo", claims.getSubject());
+            } catch (ServletException | JwtException | IllegalArgumentException e) {
+                HttpServletResponse response = (HttpServletResponse) servletResponse;
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setHeader("WWW-Authenticate", "Bearer");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"status\":401,\"error\":\"Se requiere un JWT LUDUS valido\"}");
+                return;
+            }
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
@@ -46,10 +59,10 @@ public class JwtFilter extends GenericFilterBean {
         }
 
 
-        // 1. Permitimos POST en /ludus/login y /ludus/usuario/ sin token (para iniciar sesión y registrarse)
-        // 2. Exigimos token para POST, PUT, DELETE en cualquier otra ruta de /ludus/
-        // 3. Exigimos token para GET que no sea /ludus/login o /ludus/usuario/
-        if (URI.contains("/ludus/login") || (metodo.equals("POST") && URI.startsWith("/ludus/usuario"))) {
+        // Solo login y registro son publicos; la busqueda IGDB conserva el JWT LUDUS.
+        // Comparar rutas exactas evita omitir autenticacion en subrutas de usuario/login.
+        if ((metodo.equals("POST") && (URI.equals("/ludus/login") || URI.equals("/ludus/login/")))
+                || (metodo.equals("POST") && URI.equals("/ludus/usuario/"))) {
             return false; // No requiere token
         }
         return true; // Todo lo demás requiere token
@@ -57,13 +70,14 @@ public class JwtFilter extends GenericFilterBean {
 
     private String obtenerToken(HttpServletRequest httpRequest) throws ServletException {
         String authHeader = httpRequest.getHeader("Authorization");
-        if(authHeader == null || !authHeader.contains("Bearer ")){
+        if(authHeader == null || !authHeader.regionMatches(true, 0, "Bearer ", 0, 7)
+                || authHeader.substring(7).isBlank()){
             throw new ServletException("Token invalido. Encabezado nulo o no contiene {Bearer TOKEN}");
         }
         return authHeader.substring(7);
     }
 
-    private void validarToken(String token) throws ServletException{
+    private Claims validarToken(String token) throws ServletException{
         try {
             Claims claims = Jwts
                     .parser()
@@ -71,7 +85,10 @@ public class JwtFilter extends GenericFilterBean {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            System.out.println("Usuario autenticado: " + claims.getSubject());
+            if (claims.getSubject() == null || claims.getSubject().isBlank()) {
+                throw new ServletException("JWT sin identidad");
+            }
+            return claims;
         }catch (SignatureException | MalformedJwtException | ExpiredJwtException e){
             throw new ServletException("Token invalido. Verifica la firma o que no esté expirado.");
         }

@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 
 //POJO
 @Entity
-@Table(name = "resenias")
+@Table(name = "resenias", uniqueConstraints = @UniqueConstraint(
+        name = "uk_resenias_usuario_juego", columnNames = {"id_usuario", "id_juego"}))
 public class Publicacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Publicacion {
 
     @Column (name = "calificacion", nullable = false)
     private Double calificacion;
-    @Column (name = "texto_resenia", nullable = false)
+    @Column (name = "texto_resenia", nullable = false, columnDefinition = "TEXT")
     private String texto_resenia;
     @Column (name = "fecha_publicacion", nullable = false)
     private LocalDateTime fecha_publicacion;

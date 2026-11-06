@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ludus/interaccion/")
 public class InteraccionController {
+    @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.security.CurrentUser current;
 
     private final InteraccionesService service;
 
@@ -30,12 +31,15 @@ public class InteraccionController {
 
     @PostMapping
     public ResponseEntity<Interaccion> addInteraccion(@RequestBody Interaccion interaccion) {
+        interaccion.setId_interaccion(null);
+        interaccion.setUsuario(current.get());
         Interaccion nuevaInteraccion = service.addInteraccion(interaccion);
         return new ResponseEntity<>(nuevaInteraccion, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id_interaccion}")
     public ResponseEntity<Void> deleteInteraccion(@PathVariable Integer id_interaccion) {
+        current.owns(service.getInteraccion(id_interaccion).getUsuario().getId_usuario());
         service.deleteInteraccion(id_interaccion);
         return ResponseEntity.noContent().build();
     }

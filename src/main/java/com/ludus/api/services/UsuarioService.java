@@ -38,7 +38,9 @@ public class UsuarioService {
     }
 
     public Usuario addUsuario(Usuario usuario){
-        if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+        if(usuario.getNombre()!=null && usuario.getCorreo()!=null && usuario.getContrasenia()!=null && usuario.getTelefono()!=null
+            && !usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+            usuario.setId_usuario(null);
 
             // Encriptamos usando el bean inyectado
             usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));

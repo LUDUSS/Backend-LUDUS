@@ -11,6 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/ludus/seguidor/")
 public class SeguidorController {
+    @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.security.CurrentUser current;
+    @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.repositories.SeguidorRepository repository;
 
     private final SeguidorService service;
 
@@ -35,12 +37,14 @@ public class SeguidorController {
 
     @PostMapping("seguir")
     public ResponseEntity<Seguidor> addSeguidor(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
+        current.owns(idSeguidor);
         Seguidor nuevoSeguimiento = service.addSeguidor(idSeguidor, idSeguido);
         return new ResponseEntity<>(nuevoSeguimiento, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id_seguimiento}")
     public ResponseEntity<Void> deleteSeguidor(@PathVariable Integer id_seguimiento) {
+        current.owns(repository.findById(id_seguimiento).orElseThrow(()->new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND,"Seguimiento no encontrado")).getSeguidor().getId_usuario());
         service.deleteSeguidor(id_seguimiento);
         return ResponseEntity.noContent().build();
     }
