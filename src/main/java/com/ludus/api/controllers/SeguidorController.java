@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ludus/seguidor/")
+@RequestMapping(path = "/ludus/seguidor/")
 public class SeguidorController {
     @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.security.CurrentUser current;
     @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.repositories.SeguidorRepository repository;
@@ -30,6 +30,7 @@ public class SeguidorController {
         return ResponseEntity.ok(service.getSiguiendo(id_usuario));
     }
 
+    // Quiénes siguen a un usuario (seguidores)
     @GetMapping("seguidores/{id_usuario}")
     public ResponseEntity<List<Seguidor>> getSeguidoresDe(@PathVariable Integer id_usuario) {
         return ResponseEntity.ok(service.getSeguidoresDe(id_usuario));
@@ -42,6 +43,7 @@ public class SeguidorController {
         return new ResponseEntity<>(nuevoSeguimiento, HttpStatus.CREATED);
     }
 
+    // Dejar de seguir por ID de seguimiento
     @DeleteMapping("{id_seguimiento}")
     public ResponseEntity<Void> deleteSeguidor(@PathVariable Integer id_seguimiento) {
         current.owns(repository.findById(id_seguimiento).orElseThrow(()->new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND,"Seguimiento no encontrado")).getSeguidor().getId_usuario());

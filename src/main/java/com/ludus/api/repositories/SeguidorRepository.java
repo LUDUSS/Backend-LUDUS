@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SeguidorRepository extends JpaRepository<Seguidor, Integer> {
@@ -19,4 +20,7 @@ public interface SeguidorRepository extends JpaRepository<Seguidor, Integer> {
 
     @Query("SELECT COUNT(s) > 0 FROM Seguidor s WHERE s.seguidor.id_usuario = :idSeguidor AND s.seguido.id_usuario = :idSeguido")
     boolean existsBySeguidorIdAndSeguidoId(@Param("idSeguidor") Integer idSeguidor, @Param("idSeguido") Integer idSeguido);
+
+    @Query("SELECT s FROM Seguidor s WHERE s.seguidor.id_usuario = :idSeguidor AND s.seguido.id_usuario = :idSeguido")
+    Optional<Seguidor> findBySeguidorIdAndSeguidoId(@Param("idSeguidor") Integer idSeguidor, @Param("idSeguido") Integer idSeguido);
 }

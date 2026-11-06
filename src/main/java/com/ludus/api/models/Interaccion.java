@@ -1,11 +1,10 @@
 package com.ludus.api.models;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-//POJO
+// POJO
 @Entity
 @Table(name = "interacciones", uniqueConstraints = @UniqueConstraint(
         name = "uk_interacciones_usuario_resenia", columnNames = {"id_usuario", "id_resenia"}))
@@ -16,34 +15,77 @@ public class Interaccion {
     @Column(name = "id_interaccion", nullable = false, unique = true)
     private Integer id_interaccion;
 
-
-    @Column(name = "fecha_like", nullable = false)
+    @Column(name = "fechas_like", nullable = false)
     private LocalDateTime fecha_like;
 
     // Clave foránea hacia Usuarios
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Usuario usuario;
 
     // Clave foránea hacia Reseñas
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_resenia", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Publicacion publicacion;
 
-    // Constructos vació
-    public Interaccion(){
+    // Constructor vacío
+    public Interaccion() {
+    }
 
-    } // Constructor vació
+    public Interaccion(Integer id_interaccion, Usuario usuario, Publicacion publicacion, LocalDateTime fecha_like) {
+        this.id_interaccion = id_interaccion;
+        this.usuario = usuario;
+        this.publicacion = publicacion;
+        this.fecha_like = fecha_like;
+    }
 
-    public Integer getId_interaccion() { return id_interaccion; }
-    public void setId_interaccion(Integer id_interaccion) { this.id_interaccion = id_interaccion; }
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-    public Publicacion getPublicacion() { return publicacion; }
-    public void setPublicacion(Publicacion publicacion) { this.publicacion = publicacion; }
-    public LocalDateTime getFecha_like() { return fecha_like; }
-    public void setFecha_like(LocalDateTime fecha_like) { this.fecha_like = fecha_like; }
+    // Getters y Setters
+    public Integer getId_interaccion() {
+        return id_interaccion;
+    }
 
-} // class Interacion
+    public void setId_interaccion(Integer id_interaccion) {
+        this.id_interaccion = id_interaccion;
+    }
+
+    public Integer getId_interacciones() {
+        return id_interaccion;
+    }
+
+    public LocalDateTime getFecha_like() {
+        return fecha_like;
+    }
+
+    public void setFecha_like(LocalDateTime fecha_like) {
+        this.fecha_like = fecha_like;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Publicacion getPublicacion() {
+        return publicacion;
+    }
+
+    public void setPublicacion(Publicacion publicacion) {
+        this.publicacion = publicacion;
+    }
+
+    // Métodos auxiliares para obtener IDs fácilmente
+    @Transient
+    public Integer getIdUsuario() {
+        return usuario != null ? usuario.getId_usuario() : null;
+    }
+
+    @Transient
+    public Integer getIdResenia() {
+        return publicacion != null ? publicacion.getId_resenia() : null;
+    }
+}
