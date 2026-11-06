@@ -1,4 +1,7 @@
 package com.ludus.api.controllers;
+
+import com.ludus.api.models.Usuario;
+import com.ludus.api.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,7 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/ludus/usuario/")
 public class UsuarioController {
-    @Autowired private com.ludus.api.security.CurrentUser currentUser;
     private final UsuarioService service;
 
     @Autowired
@@ -31,8 +33,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("{id_usuario}")
-    public  Usuario deleteUsuario(@PathVariable Integer id_usuario){
-        currentUser.owns(id_usuario);
+    public Usuario deleteUsuario(@PathVariable Integer id_usuario) {
         return service.deleteUsuario(id_usuario);
     }
 
@@ -44,8 +45,6 @@ public class UsuarioController {
     @PutMapping("/{id_usuario}")
     public Usuario updateUsuario(@PathVariable Integer id_usuario,
                                  @RequestBody Usuario usuario) {
-        currentUser.owns(id_usuario);
-
         return service.updateUsuario(
                 id_usuario,
                 usuario.getNombre(),
