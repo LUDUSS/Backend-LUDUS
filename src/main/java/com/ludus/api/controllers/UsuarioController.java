@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping (path = "/ludus/usuario/")
+@RequestMapping (path = "/ludus/usuario")
 
 public class UsuarioController {
     @Autowired private com.ludus.api.security.CurrentUser currentUser;
@@ -19,7 +19,7 @@ public class UsuarioController {
         this.service = service;
     }// fin constructor
 
-    @GetMapping
+    @GetMapping("/")
     public List<Usuario> getUsuario(){
         return  service.getUsuario();
     }// fin LIST getUsuario
@@ -39,7 +39,8 @@ public class UsuarioController {
     }// fin deleteUsuario
 
     // agregar un usuario
-    @PostMapping
+    // Ruta canonica sin barra; la variante con barra conserva compatibilidad.
+    @PostMapping({"", "/"})
     public  Usuario addUsuario(@RequestBody Usuario usuario){ // -> Solicita los datos del usuario en el cuerpo de la solicitud en formato JSON
         return  service.addUsuario(usuario);
     }// fin addUsuario
