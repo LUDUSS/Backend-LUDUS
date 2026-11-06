@@ -58,21 +58,3 @@ public class UsuarioController {
                 usuario.getSobre_mi()
         );
     }
-
-    @PatchMapping("/{id_usuario}/privacidad")
-    public Usuario updatePrivacidad(@PathVariable Integer id_usuario,
-                                    @RequestParam boolean perfil_publico) {
-        return service.updatePrivacidad(id_usuario, perfil_publico);
-    }
-
-    @PatchMapping("/{id_usuario}/juego-activo")
-    public Usuario updateJuegoActivo(@PathVariable Integer id_usuario,
-                                     @RequestParam(required = false) String juego_activo) {
-        return service.updateJuegoActivo(id_usuario, juego_activo);
-    }
-
-    @GetMapping("buscar")
-    public List<Usuario> buscarUsuarios(@RequestParam String q) {
-        return service.buscarPorNombre(q);
-    }
-}
