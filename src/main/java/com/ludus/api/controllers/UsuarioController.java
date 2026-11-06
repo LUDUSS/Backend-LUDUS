@@ -1,51 +1,52 @@
 package com.ludus.api.controllers;
 
 import com.ludus.api.models.Usuario;
-import com.ludus.api.security.CurrentUser;
 import com.ludus.api.services.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/ludus/usuario")
+@RequestMapping (path = "/ludus/usuario")
+
 public class UsuarioController {
-    
-    private final CurrentUser currentUser;
+    @Autowired private com.ludus.api.security.CurrentUser currentUser;
     private final UsuarioService service;
-
-    public UsuarioController(CurrentUser currentUser, UsuarioService service) {
-        this.currentUser = currentUser;
+    @Autowired// -> Gestiona la inyección de dependencias de forma automatica
+    // -> INICIO CONSTRUCTOR PARA  UsuarioController
+    public UsuarioController(UsuarioService service){
         this.service = service;
-    }
+    }// fin constructor
 
-    @GetMapping
-    public List<Usuario> getUsuario() {
-        return service.getUsuario();
-    }
+    @GetMapping("/")
+    public List<Usuario> getUsuario(){
+        return  service.getUsuario();
+    }// fin LIST getUsuario
 
+    // SEGUNDO METODO GET HTTP
     @GetMapping("{id_usuario}")
-    public Usuario getUsuario(@PathVariable Integer id_usuario) {
+    // Método Público
+    public Usuario getUsuario(@PathVariable Integer id_usuario){
         return service.getUsuario(id_usuario);
-    }
+    }// fin getUsuario
 
-    @GetMapping("correo/{correo}")
-    public Usuario getUsuarioPorCorreo(@PathVariable String correo) {
-        return service.getUsuarioPorCorreo(correo);
-    }
-
+    // borrar un usuario con metodo delete
     @DeleteMapping("{id_usuario}")
-    public Usuario deleteUsuario(@PathVariable Integer id_usuario) {
+    public  Usuario deleteUsuario(@PathVariable Integer id_usuario){
         currentUser.owns(id_usuario);
         return service.deleteUsuario(id_usuario);
-    }
+    }// fin deleteUsuario
 
-    @PostMapping
-    public Usuario addUsuario(@RequestBody Usuario usuario) {
-        return service.addUsuario(usuario);
-    }
+    // agregar un usuario
+    // Ruta canonica sin barra; la variante con barra conserva compatibilidad.
+    @PostMapping({"", "/"})
+    public  Usuario addUsuario(@RequestBody Usuario usuario){ // -> Solicita los datos del usuario en el cuerpo de la solicitud en formato JSON
+        return  service.addUsuario(usuario);
+    }// fin addUsuario
 
-    @PutMapping("{id_usuario}")
+    // editar un usuario
+    @PutMapping("/{id_usuario}")
     public Usuario updateUsuario(@PathVariable Integer id_usuario,
                                  @RequestBody Usuario usuario) {
         currentUser.owns(id_usuario);
@@ -59,4 +60,5 @@ public class UsuarioController {
                 usuario.getSobre_mi()
         );
     }
-}
+}// fin class UsuarioController;
+

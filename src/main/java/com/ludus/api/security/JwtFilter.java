@@ -62,7 +62,7 @@ public class JwtFilter extends GenericFilterBean {
         // Solo login y registro son publicos; la busqueda IGDB conserva el JWT LUDUS.
         // Comparar rutas exactas evita omitir autenticacion en subrutas de usuario/login.
         if ((metodo.equals("POST") && (URI.equals("/ludus/login") || URI.equals("/ludus/login/")))
-                || (metodo.equals("POST") && URI.equals("/ludus/usuario/"))) {
+                || (metodo.equals("POST") && (URI.equals("/ludus/usuario") || URI.equals("/ludus/usuario/")))) {
             return false; // No requiere token
         }
         return true; // Todo lo demás requiere token

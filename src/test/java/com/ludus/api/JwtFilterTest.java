@@ -22,7 +22,7 @@ class JwtFilterTest {
     @RestController static class Probe {
         @RequestMapping("/ludus/igdb/buscar") String search() { return "ok"; }
         @PostMapping("/ludus/login") String login() { return "ok"; }
-        @PostMapping("/ludus/usuario/") String register() { return "ok"; }
+        @PostMapping({"/ludus/usuario", "/ludus/usuario/"}) String register() { return "ok"; }
         @PostMapping("/ludus/usuario/admin") String protectedWrite() { return "ok"; }
     }
     @Test void missingTokenIs401() throws Exception {
@@ -50,6 +50,7 @@ class JwtFilterTest {
     }
     @Test void publicLoginRegistrationAndCorsStillWork() throws Exception {
         mvc.perform(post("/ludus/login")).andExpect(status().isOk());
+        mvc.perform(post("/ludus/usuario")).andExpect(status().isOk());
         mvc.perform(post("/ludus/usuario/")).andExpect(status().isOk());
         mvc.perform(post("/ludus/usuario/admin")).andExpect(status().isUnauthorized());
         mvc.perform(options("/ludus/igdb/buscar").header("Origin", "http://localhost:5502")
