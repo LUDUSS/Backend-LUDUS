@@ -76,3 +76,4 @@ public class UsuarioController {
         return service.buscarPorNombre(q);
     }
 }
+}
