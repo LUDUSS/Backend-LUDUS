@@ -1,0 +1,36 @@
+package com.ludus.api.controllers;
+
+import com.ludus.api.models.Comentario;
+import com.ludus.api.services.ComentarioService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(path = "/ludus/comentario/")
+
+public class ComentarioController {
+    @org.springframework.beans.factory.annotation.Autowired private com.ludus.api.security.CurrentUser current;
+    private final ComentarioService service;
+
+    public ComentarioController(ComentarioService service) {
+        this.service = service;
+    }
+
+    @GetMapping("resenia/{id_resenia}")
+    public List<Comentario> getComentariosPorResenia(@PathVariable Integer id_resenia) {
+        return service.getComentariosPorResenia(id_resenia);
+    }
+
+    @GetMapping
+    public List<Comentario> getAllComentarios() {
+        return service.getAllComentarios();
+    }
+
+    @PostMapping
+    public Comentario addComentario(@RequestBody Comentario comentario) {
+        comentario.setId_comentario(null);
+        comentario.setUsuario(current.get());
+        return service.addComentario(comentario);
+    }
+}
