@@ -124,7 +124,6 @@ public class Usuario {
                 "id_usuario=" + id_usuario +
                 ", nombre='" + nombre + '\'' +
                 ", correo='" + correo + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", sobre_mi='" + sobre_mi + '\'' +
                 ", fecha_registro=" + fecha_registro +

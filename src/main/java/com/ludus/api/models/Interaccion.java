@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 
 // POJO
 @Entity
-@Table(name = "interacciones")
+@Table(name = "interacciones", uniqueConstraints = @UniqueConstraint(
+        name = "uk_interacciones_usuario_resenia", columnNames = {"id_usuario", "id_resenia"}))
+
 public class Interaccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

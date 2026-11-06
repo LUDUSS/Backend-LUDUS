@@ -1,71 +1,22 @@
 package com.ludus.api.services;
-
 import com.ludus.api.models.Juego;
 import com.ludus.api.repositories.JuegoRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
 public class JuegoService {
-
-    private final JuegoRepository repository;
-
-    public JuegoService(JuegoRepository repository) {
-        this.repository = repository;
-    }// constructor
-
-    public List<Juego> getJuegos(){
-        return repository.findAll();
-    }// getJuegos
-
-    public Juego getJuego(Integer id_juego){
-        return repository
-                .findById(id_juego)
-                .orElseThrow( () -> new IllegalArgumentException("El usuario con el ID ["+ id_juego +"] no existe") );
-    }// getJuego
-
-    public Juego deleteJuego(Integer id_juego){
-        Juego juego = null;
-
-        if(repository.existsById(id_juego)){
-            juego = repository.findById(id_juego).get();
-            repository.delete(juego);
-        }
-        return juego;
-    }// deleteJuego
-
-    public Juego addJuego(Juego juego){
-        if(!juego.getNombre_juego().isBlank() && !juego.getCategoria().isBlank() && !juego.getPlataforma().isBlank() && !juego.getDescripcion().isBlank() && !juego.getImagen_url().isBlank()){
-            repository.save(juego);
-        }
-        return juego;
-    }// addJuego
-
-
-    public Juego updateJuego(Integer idJuego, String nombreJuego, String categoria, String plataforma, String descripcion, String imagenUrl) {
-        Juego juego = null;
-
-        if(repository.existsById(idJuego)){
-            Juego jg = repository.findById(idJuego).get();
-            if(nombreJuego != null && !nombreJuego.isBlank() ){
-                jg.setNombre_juego(nombreJuego);
-            }
-            if(categoria != null && !categoria.isBlank() ){
-                jg.setNombre_juego(categoria);
-            }
-            if(plataforma != null && !plataforma.isBlank() ){
-                jg.setNombre_juego(plataforma);
-            }
-            if(descripcion != null && !descripcion.isBlank() ){
-                jg.setNombre_juego(descripcion);
-            }
-            if(imagenUrl != null && !imagenUrl.isBlank() ){
-                jg.setNombre_juego(imagenUrl);
-            }
-            juego = jg;
-            repository.save(juego);
-        }
-        return juego;
-    }// updateJuego
+    private final JuegoRepository games;
+    private final GameResolver resolver;
+    private final com.ludus.api.security.CurrentUser current;
+    public JuegoService(JuegoRepository games,GameResolver resolver,com.ludus.api.security.CurrentUser current) {this.games=games;this.resolver=resolver;this.current=current;}
+    // Compatibilidad: usar IGDB paginado para nuevo catalogo.
+    public List<Juego> getJuegos() {return games.findAll();}
+    public Juego getJuego(Integer id) {return games.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Juego local no encontrado"));}
+    public Juego addJuego(Juego input) {current.get();return resolver.resolve(input.getId_api());}
+    public Juego deleteJuego(Integer id) {throw forbidden();}
+    public Juego updateJuego(Integer id,String nombre,String categoria,String plataforma,String descripcion,String imagen) {throw forbidden();}
+    private ResponseStatusException forbidden() {return new ResponseStatusException(HttpStatus.FORBIDDEN,"El catalogo verificado no admite edicion ni borrado manual");}
 }

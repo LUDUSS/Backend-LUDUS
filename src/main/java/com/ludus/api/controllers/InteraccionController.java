@@ -42,19 +42,17 @@ public class InteraccionController {
         return ResponseEntity.noContent().build();
     }
 
-    // Alternar me gusta (dar o quitar me gusta según el estado actual)
-    @PostMapping("/toggle")
-    public Interaccion toggleLike(@RequestParam Integer idUsuario, @RequestParam Integer idResenia) {
-        return service.toggleLike(idUsuario, idResenia);
-    }
+    @PostMapping("resenia/{idResenia}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public com.ludus.api.dtos.LikeState like(@PathVariable Integer idResenia) {return service.like(idResenia);}
 
-    // Obtener información de me gusta de una reseña
-    @GetMapping("/resenia/{idResenia}")
-    public Map<String, Object> likesDeResenia(@PathVariable Integer idResenia,
-                                             @RequestParam(required = false) Integer idUsuario) {
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("total", service.contarLikes(idResenia));
-        resp.put("likeado", idUsuario != null && service.yaLikeado(idUsuario, idResenia));
-        return resp;
-    }
+    @DeleteMapping("resenia/{idResenia}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unlike(@PathVariable Integer idResenia) {service.unlike(idResenia);}
+
+    @GetMapping("resenia/{idResenia}")
+    public com.ludus.api.dtos.LikeState state(@PathVariable Integer idResenia) {return service.state(idResenia);}
+
+    @GetMapping("resenias")
+    public List<com.ludus.api.dtos.LikeState> states(@RequestParam List<Integer> ids) {return service.states(ids);}
 }

@@ -24,6 +24,6 @@ public class LoginController {
         if(service.validarUsuario(request)){
             return new TokenJwt(service.generarToken(request.getCorreo()));
         }
-        throw new ServletException("> Error de LOGIN: Correo o Contraseña incorrectos.");
+        throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED,"Correo o contrasena incorrectos");
     }
 }

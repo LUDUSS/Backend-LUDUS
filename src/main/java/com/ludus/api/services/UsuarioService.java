@@ -45,7 +45,9 @@ public class UsuarioService {
     }
 
     public Usuario addUsuario(Usuario usuario){
-        if(!usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+        if(usuario.getNombre()!=null && usuario.getCorreo()!=null && usuario.getContrasenia()!=null && usuario.getTelefono()!=null
+            && !usuario.getNombre().isBlank() && !usuario.getCorreo().isBlank() && !usuario.getContrasenia().isBlank() && !usuario.getTelefono().isBlank()){
+            usuario.setId_usuario(null);
 
             // Encriptamos usando el bean inyectado
             usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
@@ -86,26 +88,5 @@ public class UsuarioService {
             repository.save(usuario);
         }
         return usuario;
-    }
-
-    public Usuario updatePrivacidad(Integer idUsuario, boolean perfilPublico) {
-        Usuario us = repository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
-        us.setPerfil_publico(perfilPublico);
-        return repository.save(us);
-    }
-
-    public Usuario updateJuegoActivo(Integer idUsuario, String juegoActivo) {
-        Usuario us = repository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario con ID [" + idUsuario + "] no existe."));
-        us.setJuego_activo(juegoActivo);
-        return repository.save(us);
-    }
-
-    public List<Usuario> buscarPorNombre(String q) {
-        if (q == null || q.isBlank()) {
-            return List.of();
-        }
-        return repository.findByNombreContainingIgnoreCase(q.trim());
     }
 }
