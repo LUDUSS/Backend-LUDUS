@@ -40,6 +40,14 @@ public class SeguidorController {
         return new ResponseEntity<>(nuevoSeguimiento, HttpStatus.CREATED);
     }
 
+    // Dejar de seguir por IDs de seguidor y seguido
+    @DeleteMapping("dejar")
+    public ResponseEntity<Void> dejarSeguidor(@RequestParam Integer idSeguidor, @RequestParam Integer idSeguido) {
+        current.owns(idSeguidor);
+        service.deleteSeguidor(idSeguidor, idSeguido);
+        return ResponseEntity.noContent().build();
+    }
+
     // Dejar de seguir por ID de seguimiento
     @DeleteMapping("{id_seguimiento}")
     public ResponseEntity<Void> deleteSeguidor(@PathVariable Integer id_seguimiento) {

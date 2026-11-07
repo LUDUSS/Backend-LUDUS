@@ -35,6 +35,31 @@ public class UsuarioService {
         return repository.findByCorreo(correo.trim().toLowerCase()).orElse(null);
     }
 
+    public List<Usuario> buscarPorNombre(String q) {
+        if (q == null || q.isBlank()) {
+            return List.of();
+        }
+        return repository.findByNombreContainingIgnoreCase(q.trim());
+    }
+
+    public Usuario updatePrivacidad(Integer idUsuario, boolean perfilPublico) {
+        if (repository.existsById(idUsuario)) {
+            Usuario usuario = repository.findById(idUsuario).get();
+            usuario.setPerfil_publico(perfilPublico);
+            return repository.save(usuario);
+        }
+        return null;
+    }
+
+    public Usuario updateJuegoActivo(Integer idUsuario, String juegoActivo) {
+        if (repository.existsById(idUsuario)) {
+            Usuario usuario = repository.findById(idUsuario).get();
+            usuario.setJuego_activo(juegoActivo != null ? juegoActivo.trim() : null);
+            return repository.save(usuario);
+        }
+        return null;
+    }
+
     public Usuario deleteUsuario(Integer id_usuario) {
         Usuario usuario = null;
         if(repository.existsById(id_usuario)){

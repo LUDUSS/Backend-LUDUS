@@ -1,23 +1,25 @@
 package com.ludus.api.controllers;
 
 import com.ludus.api.models.Usuario;
+import com.ludus.api.security.CurrentUser;
 import com.ludus.api.services.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/ludus/usuario/")
+@RequestMapping(path = "/ludus/usuario")
 public class UsuarioController {
+
+    private final CurrentUser currentUser;
     private final UsuarioService service;
 
-    @Autowired
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(CurrentUser currentUser, UsuarioService service) {
+        this.currentUser = currentUser;
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public List<Usuario> getUsuario() {
         return service.getUsuario();
     }
@@ -32,17 +34,37 @@ public class UsuarioController {
         return service.getUsuarioPorCorreo(correo);
     }
 
+    @GetMapping("buscar")
+    public List<Usuario> buscarUsuarios(@RequestParam String q) {
+        return service.buscarPorNombre(q);
+    }
+
+    @PatchMapping("{id_usuario}/privacidad")
+    public Usuario updatePrivacidad(@PathVariable Integer id_usuario,
+                                    @RequestParam boolean perfil_publico) {
+        currentUser.owns(id_usuario);
+        return service.updatePrivacidad(id_usuario, perfil_publico);
+    }
+
+    @PatchMapping("{id_usuario}/juego-activo")
+    public Usuario updateJuegoActivo(@PathVariable Integer id_usuario,
+                                     @RequestParam(required = false) String juego_activo) {
+        currentUser.owns(id_usuario);
+        return service.updateJuegoActivo(id_usuario, juego_activo);
+    }
+
     @DeleteMapping("{id_usuario}")
     public Usuario deleteUsuario(@PathVariable Integer id_usuario) {
+        currentUser.owns(id_usuario);
         return service.deleteUsuario(id_usuario);
     }
 
-    @PostMapping
+    @PostMapping({"", "/"})
     public Usuario addUsuario(@RequestBody Usuario usuario) {
         return service.addUsuario(usuario);
     }
 
-    @PutMapping("/{id_usuario}")
+    @PutMapping("{id_usuario}")
     public Usuario updateUsuario(@PathVariable Integer id_usuario,
                                  @RequestBody Usuario usuario) {
         return service.updateUsuario(
@@ -53,22 +75,5 @@ public class UsuarioController {
                 usuario.getTelefono(),
                 usuario.getSobre_mi()
         );
-    }
-
-    @PatchMapping("/{id_usuario}/privacidad")
-    public Usuario updatePrivacidad(@PathVariable Integer id_usuario,
-                                    @RequestParam boolean perfil_publico) {
-        return service.updatePrivacidad(id_usuario, perfil_publico);
-    }
-
-    @PatchMapping("/{id_usuario}/juego-activo")
-    public Usuario updateJuegoActivo(@PathVariable Integer id_usuario,
-                                     @RequestParam(required = false) String juego_activo) {
-        return service.updateJuegoActivo(id_usuario, juego_activo);
-    }
-
-    @GetMapping("buscar")
-    public List<Usuario> buscarUsuarios(@RequestParam String q) {
-        return service.buscarPorNombre(q);
     }
 }

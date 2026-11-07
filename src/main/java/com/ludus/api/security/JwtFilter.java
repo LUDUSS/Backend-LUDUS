@@ -46,10 +46,10 @@ public class JwtFilter extends GenericFilterBean {
         }
 
 
-        // 1. Permitimos POST en /ludus/login y /ludus/usuario/ sin token (para iniciar sesión y registrarse)
-        // 2. Exigimos token para POST, PUT, DELETE en cualquier otra ruta de /ludus/
-        // 3. Exigimos token para GET que no sea /ludus/login o /ludus/usuario/
-        if (URI.contains("/ludus/login") || (metodo.equals("POST") && URI.startsWith("/ludus/usuario"))) {
+        // Solo login y registro son publicos; la busqueda IGDB conserva el JWT LUDUS.
+        // Comparar rutas exactas evita omitir autenticacion en subrutas de usuario/login.
+        if ((metodo.equals("POST") && (URI.equals("/ludus/login") || URI.equals("/ludus/login/")))
+                || (metodo.equals("POST") && (URI.equals("/ludus/usuario") || URI.equals("/ludus/usuario/")))) {
             return false; // No requiere token
         }
         return true; // Todo lo demás requiere token

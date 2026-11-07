@@ -54,3 +54,6 @@ Thumbs.db
 
 ### Secretos (Opcional pero recomendado) ###
 *.env
+
+.env
+.env.local
