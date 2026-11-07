@@ -1,8 +1,8 @@
 package com.ludus.api.controllers;
 
 import com.ludus.api.models.Usuario;
-import com.ludus.api.security.CurrentUser;
 import com.ludus.api.services.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,11 +11,10 @@ import java.util.List;
 @RequestMapping(path = "/ludus/usuario")
 public class UsuarioController {
 
-    private final CurrentUser currentUser;
     private final UsuarioService service;
 
-    public UsuarioController(CurrentUser currentUser, UsuarioService service) {
-        this.currentUser = currentUser;
+    @Autowired
+    public UsuarioController(UsuarioService service) {
         this.service = service;
     }
 
@@ -42,20 +41,17 @@ public class UsuarioController {
     @PatchMapping("{id_usuario}/privacidad")
     public Usuario updatePrivacidad(@PathVariable Integer id_usuario,
                                     @RequestParam boolean perfil_publico) {
-        currentUser.owns(id_usuario);
         return service.updatePrivacidad(id_usuario, perfil_publico);
     }
 
     @PatchMapping("{id_usuario}/juego-activo")
     public Usuario updateJuegoActivo(@PathVariable Integer id_usuario,
                                      @RequestParam(required = false) String juego_activo) {
-        currentUser.owns(id_usuario);
         return service.updateJuegoActivo(id_usuario, juego_activo);
     }
 
     @DeleteMapping("{id_usuario}")
     public Usuario deleteUsuario(@PathVariable Integer id_usuario) {
-        currentUser.owns(id_usuario);
         return service.deleteUsuario(id_usuario);
     }
 
