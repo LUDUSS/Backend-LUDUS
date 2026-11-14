@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder; // <--- Inyectamos el encriptador
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder){
         this.repository = repository;
@@ -35,11 +36,44 @@ public class UsuarioService {
         return repository.findByCorreo(correo.trim().toLowerCase()).orElse(null);
     }
 
+    public Usuario getUsuarioPorGamertag(String gamertag) {
+        if (gamertag == null || gamertag.isBlank()) {
+            return null;
+        }
+        return repository.findByGamertag(gamertag.trim().replaceFirst("^@", "")).orElse(null);
+    }
+
     public List<Usuario> buscarPorNombre(String q) {
         if (q == null || q.isBlank()) {
             return List.of();
         }
-        return repository.findByNombreContainingIgnoreCase(q.trim());
+        String queryLimpia = q.trim().replaceFirst("^@", "");
+        return repository.buscarPorNombreOGamertag(queryLimpia);
+    }
+
+    public Usuario updateGamertag(Integer idUsuario, String gamertag) {
+        if (repository.existsById(idUsuario)) {
+            Usuario usuario = repository.findById(idUsuario).get();
+            String tag = (gamertag != null && !gamertag.isBlank()) ? gamertag.trim().replaceFirst("^@", "") : null;
+            if (tag != null) {
+                Optional<Usuario> existente = repository.findByGamertag(tag);
+                if (existente.isPresent() && !existente.get().getId_usuario().equals(idUsuario)) {
+                    throw new IllegalArgumentException("El gamertag ya está en uso por otro jugador");
+                }
+            }
+            usuario.setGamertag(tag);
+            return repository.save(usuario);
+        }
+        return null;
+    }
+
+    public Usuario updateFotoPerfil(Integer idUsuario, String fotoPerfil) {
+        if (repository.existsById(idUsuario)) {
+            Usuario usuario = repository.findById(idUsuario).get();
+            usuario.setFoto_perfil(fotoPerfil != null && !fotoPerfil.isBlank() ? fotoPerfil.trim() : null);
+            return repository.save(usuario);
+        }
+        return null;
     }
 
     public Usuario updatePrivacidad(Integer idUsuario, boolean perfilPublico) {
@@ -84,12 +118,16 @@ public class UsuarioService {
                 usuario.setSobre_mi("");
             }
 
+            if(usuario.getGamertag() != null && !usuario.getGamertag().isBlank()) {
+                usuario.setGamertag(usuario.getGamertag().trim().replaceFirst("^@", ""));
+            }
+
             return repository.save(usuario);
         }
         throw new IllegalArgumentException("Faltan campos obligatorios del usuario");
     }
 
-    public Usuario updateUsuario(Integer idUsuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi) {
+    public Usuario updateUsuario(Integer idUsuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi, String foto_perfil, String gamertag) {
         Usuario usuario = null;
         if(repository.existsById(idUsuario)){
             Usuario us = repository.findById(idUsuario).get();
@@ -100,13 +138,26 @@ public class UsuarioService {
                 us.setCorreo(correo);
             }
             if (contrasenia != null && !contrasenia.isBlank()) {
-                us.setContrasenia(passwordEncoder.encode(contrasenia)); // Encriptamos aquí también
+                us.setContrasenia(passwordEncoder.encode(contrasenia));
             }
             if (telefono != null && !telefono.isBlank()) {
                 us.setTelefono(telefono);
             }
             if (sobre_mi != null) {
                 us.setSobre_mi(sobre_mi);
+            }
+            if (foto_perfil != null) {
+                us.setFoto_perfil(foto_perfil.isBlank() ? null : foto_perfil.trim());
+            }
+            if (gamertag != null) {
+                String cleanTag = gamertag.isBlank() ? null : gamertag.trim().replaceFirst("^@", "");
+                if (cleanTag != null) {
+                    Optional<Usuario> existente = repository.findByGamertag(cleanTag);
+                    if (existente.isPresent() && !existente.get().getId_usuario().equals(idUsuario)) {
+                        throw new IllegalArgumentException("El gamertag ya está en uso por otro jugador");
+                    }
+                }
+                us.setGamertag(cleanTag);
             }
             usuario = us;
             repository.save(usuario);

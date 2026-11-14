@@ -33,6 +33,11 @@ public class UsuarioController {
         return service.getUsuarioPorCorreo(correo);
     }
 
+    @GetMapping("gamertag/{gamertag}")
+    public Usuario getUsuarioPorGamertag(@PathVariable String gamertag) {
+        return service.getUsuarioPorGamertag(gamertag);
+    }
+
     @GetMapping("buscar")
     public List<Usuario> buscarUsuarios(@RequestParam String q) {
         return service.buscarPorNombre(q);
@@ -48,6 +53,18 @@ public class UsuarioController {
     public Usuario updateJuegoActivo(@PathVariable Integer id_usuario,
                                      @RequestParam(required = false) String juego_activo) {
         return service.updateJuegoActivo(id_usuario, juego_activo);
+    }
+
+    @PatchMapping("{id_usuario}/gamertag")
+    public Usuario updateGamertag(@PathVariable Integer id_usuario,
+                                  @RequestParam(required = false) String gamertag) {
+        return service.updateGamertag(id_usuario, gamertag);
+    }
+
+    @PatchMapping("{id_usuario}/avatar")
+    public Usuario updateFotoPerfil(@PathVariable Integer id_usuario,
+                                    @RequestParam(required = false) String foto_perfil) {
+        return service.updateFotoPerfil(id_usuario, foto_perfil);
     }
 
     @DeleteMapping("{id_usuario}")
@@ -69,7 +86,9 @@ public class UsuarioController {
                 usuario.getCorreo(),
                 usuario.getContrasenia(),
                 usuario.getTelefono(),
-                usuario.getSobre_mi()
+                usuario.getSobre_mi(),
+                usuario.getFoto_perfil(),
+                usuario.getGamertag()
         );
     }
 }

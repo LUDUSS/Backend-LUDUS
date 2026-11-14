@@ -30,6 +30,12 @@ public class Usuario {
     @Column(name = "juego_activo")
     private String juego_activo;
 
+    @Column(name = "gamertag", unique = true)
+    private String gamertag;
+
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    private String foto_perfil;
+
     // CONSTRUCTOR
     public Usuario(Integer id_usuario, String nombre, String correo, String contrasenia, String telefono, String sobre_mi, LocalDateTime fecha_registro) {
         this.id_usuario = id_usuario;
@@ -41,9 +47,9 @@ public class Usuario {
         this.fecha_registro = fecha_registro;
     }// fin CONSTRUCTOR
 
-    public Usuario(){}// CONSTRUCTOR VACÃO
+    public Usuario(){}// CONSTRUCTOR VACÍO
 
-// MÃ‰TODOS GET Y SET
+// MÉTODOS GET Y SET
 
     public Integer getId_usuario() {
         return id_usuario;
@@ -101,7 +107,6 @@ public class Usuario {
         this.fecha_registro = fecha_registro;
     }
 
-
     public boolean isPerfil_publico() {
         return perfil_publico;
     }
@@ -117,20 +122,34 @@ public class Usuario {
     public void setJuego_activo(String juego_activo) {
         this.juego_activo = juego_activo;
     }
-    // METODO TO STRING
+
+    public String getGamertag() {
+        return gamertag;
+    }
+
+    public void setGamertag(String gamertag) {
+        this.gamertag = gamertag;
+    }
+
+    public String getFoto_perfil() {
+        return foto_perfil;
+    }
+
+    public void setFoto_perfil(String foto_perfil) {
+        this.foto_perfil = foto_perfil;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
                 "id_usuario=" + id_usuario +
                 ", nombre='" + nombre + '\'' +
                 ", correo='" + correo + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", sobre_mi='" + sobre_mi + '\'' +
                 ", fecha_registro=" + fecha_registro +
+                ", gamertag='" + gamertag + '\'' +
+                ", foto_perfil='" + foto_perfil + '\'' +
                 '}';
-    } // FIN TO STRING
-} // fin Usuario
-
-
-
+    }
+}
